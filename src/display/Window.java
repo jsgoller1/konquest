@@ -11,13 +11,19 @@ public class Window extends JFrame {
     public static final int WIDTH = 1600;
     public static final int HEIGHT = 1200;
 
+    private class GridPanel extends JPanel {
+    }
+
+
+    private JPanel gamePanel;
+
     public Window() {
         setTitle("Untitled Game");
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Centered in screen
 
-        JPanel gamePanel = new JPanel();
+        gamePanel = new JPanel();
         gamePanel.setBackground(Color.BLACK);
         add(gamePanel);
 
@@ -30,7 +36,11 @@ public class Window extends JFrame {
     }
 
     private void drawGrid(GameBoard board) {
-
+        // TODO: move to Grid Panel
+        // See: https://claude.ai/share/915f8e39-ba9e-45c3-a673-27f28a94a2b0
+        // Each cell takes up (HEIGHT / board.height pixels) x (WIDTH / board.width) pixels
+        int cellHeight = this.HEIGHT / board.getBoardHeight();
+        int cellWidth = this.WIDTH / board.getBoardWidth();
     }
 
     private void drawPieces(GameBoard board) {
