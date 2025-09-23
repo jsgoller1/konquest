@@ -1,17 +1,27 @@
 JAVA:=/opt/homebrew/opt/openjdk/bin/java
 JAVAC:=/opt/homebrew/opt/openjdk/bin/javac
-BIN_DIR:=bin
+SRC_DIR=src/
+BIN_DIR:=bin/
 
-.PHONY: 
- 
-clean:
-	reset
-	-rm -r $(BIN_DIR)
-	mkdir $(BIN_DIR)
+# NOTE (joshua): Had my own makefile until Claude suggested this once as deps got hairy. 
+# Find all .java files
+SOURCES := $(shell find $(SRC_DIR) -name "*.java" -print)
 
-main: clean logger 
-	$(JAVAC) -cp $(BIN_DIR) src/Main.java -d $(BIN_DIR)
+.PHONY: clean run build
+
+all: build run
+
+# Ensure bin directory exists
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
+
+# Compile everything in one shot
+build: $(BIN_DIR)
+	$(JAVAC) -cp $(SRC_DIR) -d $(BIN_DIR) $(SOURCES)
+
+run: build
 	$(JAVA) -cp $(BIN_DIR) Main
 
-logger:
-	$(JAVAC) src/logging/Logger.java -d $(BIN_DIR)
+clean:
+	reset
+	-rm -rf $(BIN_DIR)
