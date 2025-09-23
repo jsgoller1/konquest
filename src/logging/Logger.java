@@ -9,6 +9,15 @@ final class LoggingColorEscapes {
 
 
 public class Logger {
+    public enum Level {
+        DEBUG(0), INFO(1), WARN(2), ERROR(3);
+
+        private final int loggingLevel;
+
+        Level(int loggingLevel) {
+            this.loggingLevel = loggingLevel;
+        }
+    }
 
     public static void debug(String message) {
         log(LoggingColorEscapes.DEBUG, "DEBUG", message);
