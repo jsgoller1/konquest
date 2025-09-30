@@ -1,11 +1,20 @@
-JAVA:=/opt/homebrew/opt/openjdk/bin/java
-JAVAC:=/opt/homebrew/opt/openjdk/bin/javac
-SRC_DIR=src/
-BIN_DIR:=bin/
+# JAVA:=/opt/homebrew/opt/openjdk/bin/java
+# JAVAC:=/opt/homebrew/opt/openjdk/bin/javac
+
+JAVA:=java
+JAVAC:=javac
+SRC_DIR=src
+BIN_DIR:=bin
 
 # NOTE (joshua): Had my own makefile until Claude suggested this once as deps got hairy. 
 # Find all .java files
-SOURCES := $(shell find $(SRC_DIR) -name "*.java" -print)
+# SOURCES := $(shell find $(SRC_DIR) -name "*.java" -print)
+
+ifeq ($(OS),Windows_NT)
+    SOURCES := $(shell dir /s /b $(SRC_DIR)\*.java)
+else
+    SOURCES := $(shell find $(SRC_DIR) -name "*.java" -print)
+endif
 
 .PHONY: clean run build
 
