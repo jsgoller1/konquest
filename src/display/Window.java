@@ -14,7 +14,7 @@ public class Window extends JFrame {
     private Surface surface;
 
     private void createAWTWindow() {
-        setTitle("Untitled Game");
+        setTitle("Konquest");
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Centered in screen
