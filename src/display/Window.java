@@ -1,5 +1,6 @@
 package display;
 
+import input.InputManager;s
 import javax.swing.*;
 import game.*;
 
@@ -9,9 +10,10 @@ public class Window extends JFrame {
     public static final int WIDTH = 1600;
     public static final int HEIGHT = 1200;
 
-    private static Surface surface;
+    private InputManager inputManager;
+    private Surface surface;
 
-    public Window() {
+    private void createAWTWindow() {
         setTitle("Untitled Game");
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -22,7 +24,12 @@ public class Window extends JFrame {
         setVisible(true);
     }
 
-    public void updateDisplay(GameBoard board) {
+    public Window(InputManager inputManager) {
+        this.inputManager = inputManager;
+        createAWTWindow();
+    }
+
+    public void update(GameBoard board) {
         surface.updateDisplay(board);
     }
 

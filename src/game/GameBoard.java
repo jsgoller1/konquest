@@ -4,6 +4,7 @@ import logging.Logger;
 
 public class GameBoard {
     private BoardPiece boardData[][];
+    private Cursor cursor;
 
     public GameBoard(int height, int width) {
         if (height < 5 || width < 5) {
@@ -11,6 +12,7 @@ public class GameBoard {
             return;
         }
         boardData = new BoardPiece[height][width];
+        cursor = new Cursor();
     }
 
     public BoardPiece getBoardPiece(int y, int x) {
