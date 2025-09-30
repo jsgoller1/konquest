@@ -1,6 +1,6 @@
 package display;
 
-import input.InputManager;s
+import input.InputManager;
 import javax.swing.*;
 import game.*;
 
