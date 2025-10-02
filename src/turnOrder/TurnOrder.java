@@ -4,40 +4,38 @@ import java.util.PriorityQueue;
 
 
 
-public class TurnOrder (Unit[] Units) { // Takes in an array of units to initialize the turn order
-    PriorityQueue<Unit> PriorityQueue = new PriorityQueue<Unit>();
-    for (Unit unit : Units) {
-        PriorityQueue.add(unit);
-    
+public class TurnOrder { // Takes in an array of units to initialize the turn order
+    private PriorityQueue<BoardPiece> priorityQueue;
+
+    public TurnOrder(BoardPiece[] boardPieces) {
+        priorityQueue = new PriorityQueue<BoardPiece>();
+        for (BoardPiece boardPiece : boardPieces) {
+            priorityQueue.add(boardPiece);
+        }
     }
 
 
-    public void addUnit(Unit unit) { // Adds a unit to the turn order
-        PriorityQueue.add(unit);
-    }
-
-
-
-
-
-    public void removeUnit(Unit unit) { // removed a unit from the turn order (does it also "kill" the unit / clean up?)
-        PriorityQueue.remove(unit);
+    public void addUnit(BoardPiece piece) { // Adds a unit to the turn order
+        priorityQueue.add(piece);
     }
 
 
 
 
 
-
-    public Unit getNextUnit() { // returns the next unit in the turn
-        //return extractMax(PriorityQueue);
-
-        Unit nextUnit = PriorityQueue.poll();
-        PriorityQueue.add(nextUnit);
+    public void removeUnit(BoardPiece piece) { // removed a unit from the turn order (does it also "kill" the unit / clean up?)
+        priorityQueue.remove(piece);
+    }
 
 
+
+
+
+
+    public BoardPiece getNextUnit() { // returns the next unit in the turn order
+        BoardPiece nextUnit = priorityQueue.poll();
+        priorityQueue.add(nextUnit);
         return nextUnit;
-
     }
 }
 
