@@ -7,8 +7,8 @@ import game.*;
 
 // NOTE (joshua): Most of this boilerplate window code is suggested from Claude
 public class Window extends JFrame {
-    public static final int WIDTH = 1600;
-    public static final int HEIGHT = 1200;
+    public static final int WIDTH = 1000;
+    public static final int HEIGHT = 1000;
 
     private InputManager inputManager;
     private Surface surface;
