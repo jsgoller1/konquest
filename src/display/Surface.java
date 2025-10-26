@@ -6,10 +6,26 @@ import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
+import logging.Logger;
 
 public class Surface extends JPanel {
     private GameBoard board;
-    private Graphics2D g2d;
+
+    // TODO: the board should own its size;
+    // hardcoding here for now.
+    int SQUARE_SIZE = 32;
+    int BOARD_HEIGHT_WIDTH_SQUARE_COUNT = 20;
+    int BOARD_HEIGHT_WIDTH = BOARD_HEIGHT_WIDTH_SQUARE_COUNT * (SQUARE_SIZE);
+    int OFFSET = SQUARE_SIZE;
+
+
+    public void updateDisplay(GameBoard board) {
+        // Surface.paintComponent() drives actual drawing, but we cannot
+        // call it directly. The workflow here is:
+        // update board -> call repaint() -> ??? swing magic ??? -> paintComponent() called
+        this.board = board;
+        this.repaint();
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -18,46 +34,61 @@ public class Surface extends JPanel {
          * call methods downstream from it.
          */
         super.paintComponent(g);
-        this.g2d = (Graphics2D) g;
+        Graphics2D g2d = (Graphics2D) g;
         this.setBackground(Color.BLACK);
-        this.drawGrid();
-        this.drawPieces();
+        this.drawGrid(g2d);
+        this.drawPieces(g2d);
     }
 
-    protected void drawGrid() {
-        this.g2d.setColor(Color.LIGHT_GRAY);
-
-        // TODO: the board should own its size;
-        // hardcoding here for now.
-        int SQUARE_SIZE = 40;
-        int BOARD_HEIGHT_WIDTH_SQUARE_COUNT = 20;
-        int BOARD_HEIGHT_WIDTH = BOARD_HEIGHT_WIDTH_SQUARE_COUNT * (SQUARE_SIZE + 1);
-        int OFFSET = 100;
+    protected void drawGrid(Graphics2D g2d) {
+        g2d.setColor(Color.LIGHT_GRAY);
 
         // Vertical lines
-        for (int x = OFFSET; x <= BOARD_HEIGHT_WIDTH; x += SQUARE_SIZE) {
-            this.g2d.drawLine(x, OFFSET, x, BOARD_HEIGHT_WIDTH);
+        for (int x = 0; x <= this.BOARD_HEIGHT_WIDTH_SQUARE_COUNT; x += 1) {
+            int lineStartX = this.OFFSET + (this.SQUARE_SIZE * x);
+            int lineStartY = this.OFFSET;
+            int lineEndX = lineStartX;
+            int lineEndY = lineStartY + BOARD_HEIGHT_WIDTH;
+
+            g2d.drawLine(lineStartX, lineStartY, lineEndX, lineEndY);
         }
 
         // Horizontal lines
-        for (int y = OFFSET; y <= BOARD_HEIGHT_WIDTH; y += SQUARE_SIZE) {
-            this.g2d.drawLine(OFFSET, y, BOARD_HEIGHT_WIDTH, y);
+        for (int y = 0; y <= this.BOARD_HEIGHT_WIDTH_SQUARE_COUNT; y += 1) {
+            int lineStartX = this.OFFSET;
+            int lineStartY = this.OFFSET + (this.SQUARE_SIZE * y);
+            int lineEndX = lineStartX + BOARD_HEIGHT_WIDTH;
+            int lineEndY = lineStartY;
+
+            g2d.drawLine(lineStartX, lineStartY, lineEndX, lineEndY);
         }
 
     }
 
-
-    public void updateDisplay(GameBoard board) {
-        this.board = board;
-        this.repaint();
+    private int gridXToWindowX(int gridX) {
+        return this.OFFSET + gridX * this.SQUARE_SIZE;
     }
 
+    private int gridYToWindowY(int gridY) {
+        return this.OFFSET + gridY * this.SQUARE_SIZE;
+    }
 
-    private void drawPieces() {
-        // TODO: probably better to have an getter / iterator / something
+    private void drawPieces(Graphics2D g2d) {
         for (int y = 0; y < board.getBoardHeight(); y++) {
             for (int x = 0; x < board.getBoardWidth(); x++) {
-                // TODO: draw terrain and character if one exists.
+                BoardPiece piece = board.getBoardPiece(y, x);
+                if (piece != null) {
+                    Sprite sprite = piece.getNextSprite();
+                    if (sprite.getSpriteSheet() == null) {
+                        Logger.warn("Sprite sheet is null for " + piece.toString());
+                    }
+                    int gx = gridXToWindowX(x);
+                    int gy = gridYToWindowY(y);
+
+                    g2d.drawImage(sprite.getSpriteSheet(), gx, gy, gx + sprite.getWidth() * 2,
+                            gy + sprite.getHeight() * 2, sprite.getTopLeftX(), sprite.getTopLeftY(),
+                            sprite.getBottomRightX(), sprite.getBottomRightY(), null);
+                }
 
             }
         }

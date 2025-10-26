@@ -1,6 +1,8 @@
 package game;
 
 import logging.Logger;
+import java.util.Random;
+
 
 public class GameBoard {
     private BoardPiece boardData[][];
@@ -13,6 +15,18 @@ public class GameBoard {
         }
         boardData = new BoardPiece[height][width];
         cursor = new Cursor();
+
+        // Randomly add board pieces; this is just a proof of concept to ensure
+        /// texture loading works correctly and will be scrapped
+        Random rand = new Random();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++)
+                if (rand.nextBoolean()) {
+                    boardData[y][x] = new Character("Knight", 10, 10, 10);
+                } else {
+                    boardData[y][x] = new Enemy("Enemy", 10, 10, 10);
+                }
+        }
     }
 
     public BoardPiece getBoardPiece(int y, int x) {
