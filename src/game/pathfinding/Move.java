@@ -1,4 +1,4 @@
-public class Move.java {
+public class Move {
     private int startX;
     private int startY;
     private int endX;
@@ -41,12 +41,14 @@ public class Move.java {
         while (!queue.isEmpty()) {
             Pair current = queue.poll();
 
-            // Found the destination. Calls reconstructPath which puts all pairs into list and reverses them. 
+            // Found the destination. Calls reconstructPath which puts all pairs into list and
+            // reverses them.
             if (current.equals(end)) {
                 return reconstructPath(parent, end);
             }
 
-            // adds dx and dy to current pair to find neighbors and checks whether they are valid and !visited
+            // adds dx and dy to current pair to find neighbors and checks whether they are valid
+            // and !visited
             for (int i = 0; i < 4; i++) {
                 int newX = current.getX() + dx[i];
                 int newY = current.getY() + dy[i];
@@ -63,7 +65,8 @@ public class Move.java {
         // No path found. not in Grid
         return new ArrayList<>();
     }
-    //reverses the pairs from end to start so we are left with the correct path: Start -> End
+
+    // reverses the pairs from end to start so we are left with the correct path: Start -> End
     private List<Pair> reconstructPath(Map<Pair, Pair> parent, Pair end) {
         List<Pair> path = new ArrayList<>();
         Pair current = end;
@@ -78,11 +81,11 @@ public class Move.java {
     }
 
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Move move3 = new Move(0, 0, 2, 3);
         System.out.println("Path from (0,0) to (2,3):");
         for (Position pos : move3.getPath()) {
             System.out.println(pos);
+        }
     }
-}
 }

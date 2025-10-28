@@ -2,21 +2,24 @@ public class Pair {
     private int Y;
     private int X;
 
-    public Pair(int Y, int X){
+    public Pair(int Y, int X) {
         this.Y = Y;
         this.X = X;
     }
 
-    public int getY() { 
+    public int getY() {
         return Y;
     }
+
     public int getX() {
         return X;
     }
-    
+
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Pair pair = (Pair) o;
         return Y == pair.Y && X == pair.X;
     }
