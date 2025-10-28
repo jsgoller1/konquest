@@ -1,4 +1,4 @@
-public class Move {
+public class Move.java {
     private int startX;
     private int startY;
     private int endX;
@@ -46,7 +46,7 @@ public class Move {
                 return reconstructPath(parent, end);
             }
 
-            // Check all 4 neighbors: Up, Down, Left, Right
+            // adds dx and dy to current pair to find neighbors and checks whether they are valid and !visited
             for (int i = 0; i < 4; i++) {
                 int newX = current.getX() + dx[i];
                 int newY = current.getY() + dy[i];
@@ -78,33 +78,11 @@ public class Move {
     }
 
 
-/* BASIC TRAVERSE PATH. NOT BREADTHFIRSTSEARCH
-    public List<Pair> traversePath() {
-        List<Pair> path = new ArrayList<>();
-
-        int currentX = startX;
-        int currentY = startY;
-
-        while (currentX != endX && currentY != endY) {
-            path.add(new Pair(currentY, currentX));
-
-            if (currentX != endX){
-                currentX += endX;
-            }
-            if (currentY != endY){
-                currentX += deltaY
-            }
-        }
-
-        path.add(new Pair(endY, endX));
-        return path;
-    }
-
-*/
     public static void main(String[] args){
         Move move3 = new Move(0, 0, 2, 3);
         System.out.println("Path from (0,0) to (2,3):");
         for (Position pos : move3.getPath()) {
             System.out.println(pos);
     }
+}
 }
