@@ -3,6 +3,9 @@ import javax.swing.SwingUtilities;
 import logging.Logger;
 import display.Window;
 import game.GameBoard;
+import game.pathfinding.*;
+import java.util.ArrayList;
+
 
 class Main {
     private static Window window;
