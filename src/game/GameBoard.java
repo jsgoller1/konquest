@@ -29,8 +29,17 @@ public class GameBoard {
         }
     }
 
+    public boolean validCell(int y, int x) {
+        return (0 <= y && y < this.getBoardHeight() && 0 <= x && x < this.getBoardWidth());
+    }
+
+    public boolean cellEmpty(int y, int x) {
+        return validCell(y, x) && (boardData[y][x] == null);
+
+    }
+
     public BoardPiece getBoardPiece(int y, int x) {
-        if (!(0 <= y && y < this.getBoardHeight() && 0 <= x && x < this.getBoardWidth())) {
+        if (!validCell(y, x)) {
             Logger.error(String.format("Cannot get piece at (%d, %d)", x, y));
             return null;
         }
