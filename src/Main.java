@@ -13,7 +13,7 @@ class Main {
         // TODO: set logging levels and game board size via CLI args
         Logger.info("Starting game....");
         InputManager inputManager = new InputManager();
-        board = new GameBoard(25, 25);
+        board = new GameBoard(20, 20);
         boolean GAME_RUNNING = true;
 
         try {
