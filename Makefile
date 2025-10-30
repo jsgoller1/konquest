@@ -34,3 +34,8 @@ run: build
 clean:
 	reset
 	-rm -rf $(BIN_DIR)
+
+# This works only on MacOS
+count-lines: 
+	@echo "Project LoC (Java only)"
+	@find . -name "*.java" | xargs wc -l | tail -1 | awk '{print $1}'
