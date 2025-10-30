@@ -2,6 +2,8 @@ package game;
 
 import logging.Logger;
 import java.util.Random;
+import game.terrain.Grass;
+import game.terrain.Mountain;
 
 
 public class GameBoard {
@@ -20,12 +22,18 @@ public class GameBoard {
         /// texture loading works correctly and will be scrapped
         Random rand = new Random();
         for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++)
-                if (rand.nextBoolean()) {
+            for (int x = 0; x < width; x++) {
+                int pick = rand.nextInt(100);
+                if (pick < 65) {
+                    boardData[y][x] = new Grass();
+                } else if (pick < 75) {
+                    boardData[y][x] = new Mountain();
+                } else if (pick < 87) {
                     boardData[y][x] = new Character("Knight", 10, 10, 10);
                 } else {
                     boardData[y][x] = new Enemy("Enemy", 10, 10, 10);
                 }
+            }
         }
     }
 
