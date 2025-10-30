@@ -9,21 +9,21 @@ import logging.Logger;
 import display.Sprite;
 
 public class SpriteComponent {
-    private String spriteSheetPath;
     private BufferedImage spriteSheet;
+    private String spriteSheetPath;
 
-    public void loadSpriteSheet() {
+    public void loadSpriteSheet(String spriteSheetPath) {
         try {
-            this.spriteSheet = ImageIO.read(new File(this.spriteSheetPath));
-            Logger.debug("Successfully loaded sprite sheet from " + this.spriteSheetPath);
+            this.spriteSheet = ImageIO.read(new File(spriteSheetPath));
+            Logger.debug("Successfully loaded sprite sheet from " + spriteSheetPath);
+            this.spriteSheetPath = spriteSheetPath;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public SpriteComponent(String spriteSheetPath) {
-        this.spriteSheetPath = spriteSheetPath;
-        this.loadSpriteSheet();
+        this.loadSpriteSheet(spriteSheetPath);
     }
 
     public Sprite loadSprite(int row, int col) {
