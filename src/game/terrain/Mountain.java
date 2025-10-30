@@ -8,6 +8,11 @@ public class Mountain extends Terrain {
     private int spriteSheetRow;
     private int spriteSheetCol;
 
+    public Mountain() {
+        super(99, MOUNTAIN_SPRITE_SHEET_PATH);
+        this.spriteSheetRow = 0;
+        this.spriteSheetCol = 5;
+    }
 
     @Override
     public Sprite getNextSprite() {
@@ -16,10 +21,8 @@ public class Mountain extends Terrain {
         return this.spriteComponent.loadSprite(0, 2, 0, 2);
     }
 
-    public Mountain() {
-        super(99, MOUNTAIN_SPRITE_SHEET_PATH);
-        this.spriteSheetRow = 0;
-        this.spriteSheetCol = 5;
+    @Override
+    public boolean canBeOccupied() {
+        return false;
     }
-
 }

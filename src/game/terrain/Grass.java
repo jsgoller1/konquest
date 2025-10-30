@@ -8,14 +8,6 @@ public class Grass extends Terrain {
     private int spriteSheetRow;
     private int spriteSheetCol;
 
-
-    @Override
-    public Sprite getNextSprite() {
-
-
-        return this.spriteComponent.loadSprite(spriteSheetRow, spriteSheetCol);
-    }
-
     public Grass() {
         super(1, GRASS_SPRITE_SHEET_PATH);
         Random rand = new Random();
@@ -23,4 +15,13 @@ public class Grass extends Terrain {
         spriteSheetCol = rand.nextInt(3);
     }
 
+    @Override
+    public Sprite getNextSprite() {
+        return this.spriteComponent.loadSprite(spriteSheetRow, spriteSheetCol);
+    }
+
+    @Override
+    public boolean canBeOccupied() {
+        return true;
+    }
 }
