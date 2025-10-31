@@ -1,4 +1,4 @@
-package display;
+package sprites;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -6,11 +6,15 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import logging.Logger;
 
-import display.Sprite;
-
 public class SpriteComponent {
     private BufferedImage spriteSheet;
     private String spriteSheetPath;
+    private SpriteSet spriteSet;
+
+    public SpriteComponent(String spriteSheetPath) {
+        this.loadSpriteSheet(spriteSheetPath);
+        this.spriteSet = new SpriteSet();
+    }
 
     public void loadSpriteSheet(String spriteSheetPath) {
         try {
@@ -22,21 +26,22 @@ public class SpriteComponent {
         }
     }
 
-    public SpriteComponent(String spriteSheetPath) {
-        this.loadSpriteSheet(spriteSheetPath);
+    public Sprite getNextSprite() {
+        return this.spriteSet.getSprite();
     }
 
-    public Sprite loadSprite(int row, int col) {
-        return this.loadSprite(row, 0, col, 0);
+    public void loadSprite(int row, int col) {
+        this.loadSprite(row, 0, col, 0);
     }
 
-    public Sprite loadSprite(int row, int plus_rows, int col, int plus_cols) {
+    public void loadSprite(int row, int plus_rows, int col, int plus_cols) {
         /*
          * Loads the sprite at (row, col) on the sprite sheet; each sprite is 1x1 cell on the sheet,
          * unless otherwise specified (i.e. larger multi cell sprite like a building or boat)
          */
 
-        return new Sprite(this.spriteSheetPath, this.spriteSheet, row, plus_rows, col, plus_cols);
+        this.spriteSet.addSprite(
+                new Sprite(this.spriteSheetPath, this.spriteSheet, row, plus_rows, col, plus_cols));
     }
 }
 

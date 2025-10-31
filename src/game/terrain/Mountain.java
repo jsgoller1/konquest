@@ -1,7 +1,7 @@
 package game.terrain;
 
 import java.util.Random;
-import display.Sprite;
+import sprites.Sprite;
 
 public class Mountain extends Terrain {
     static final String MOUNTAIN_SPRITE_SHEET_PATH = "assets/Ground/Cliff.png";
@@ -12,13 +12,15 @@ public class Mountain extends Terrain {
         super(99, MOUNTAIN_SPRITE_SHEET_PATH);
         this.spriteSheetRow = 0;
         this.spriteSheetCol = 5;
+
+        this.initializeSprites();
     }
 
     @Override
-    public Sprite getNextSprite() {
+    public void initializeSprites() {
         // NOTE: Sampling is weird here; looks ok for now but need to probably slightly tweak
         // and look at the sprite sheet dimensions more carefully
-        return this.spriteComponent.loadSprite(0, 2, 0, 2);
+        this.spriteComponent.loadSprite(0, 2, 0, 2);
     }
 
     @Override

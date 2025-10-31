@@ -1,6 +1,6 @@
 package game;
 
-import display.Sprite;
+import sprites.Sprite;
 
 
 public class Character extends BoardPiece {
@@ -13,8 +13,8 @@ public class Character extends BoardPiece {
             "assets/Characters/Soldiers/Melee/RedMelee/SwordsmanRed.png";
 
     @Override
-    public Sprite getNextSprite() {
-        return this.spriteComponent.loadSprite(0, 0);
+    public void initializeSprites() {
+        this.spriteComponent.loadSprite(0, 0);
     }
 
     public Character(String name, int health, int attack, int speed) {
@@ -23,5 +23,7 @@ public class Character extends BoardPiece {
         this.health = health;
         this.attack = attack;
         this.speed = speed;
+
+        this.initializeSprites();
     }
 }

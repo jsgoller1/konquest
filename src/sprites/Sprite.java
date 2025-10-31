@@ -1,4 +1,4 @@
-package display;
+package sprites;
 
 import java.awt.image.BufferedImage;
 
