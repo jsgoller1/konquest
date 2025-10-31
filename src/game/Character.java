@@ -14,7 +14,9 @@ public class Character extends BoardPiece {
 
     @Override
     public void initializeSprites() {
+        this.spriteComponent.setAnimationTimeDeltaMs(500);
         this.spriteComponent.loadSprite(0, 0);
+        this.spriteComponent.loadSprite(0, 1);
     }
 
     public Character(String name, int health, int attack, int speed) {

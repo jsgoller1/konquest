@@ -18,14 +18,16 @@ public class Surface extends JPanel {
     int BOARD_HEIGHT_WIDTH_SQUARE_COUNT = 20;
     int BOARD_HEIGHT_WIDTH = BOARD_HEIGHT_WIDTH_SQUARE_COUNT * (SQUARE_SIZE);
     int OFFSET = SQUARE_SIZE;
+    long currUpdateTime = 0;
 
 
-    public void updateDisplay(GameBoard board) {
+    public void updateDisplay(GameBoard board, long time) {
         // Surface.paintComponent() drives actual drawing, but we cannot
         // call it directly. The workflow here is:
         // update board -> call repaint() -> ??? swing magic ??? -> paintComponent() called
         this.board = board;
         this.repaint();
+        this.currUpdateTime = time;
     }
 
     @Override
@@ -74,9 +76,9 @@ public class Surface extends JPanel {
         return this.OFFSET + gridY * this.SQUARE_SIZE;
     }
 
-    private void drawPiece(Graphics2D g2d, BoardPiece piece, int row, int col) {
+    private void drawPiece(Graphics2D g2d, BoardPiece piece, int row, int col, long deltaTime) {
         if (piece == null) {
-            Logger.warn("No piece at Y: " + row + ", X: " + col);
+            // Logger.warn("No piece at Y: " + row + ", X: " + col);
             return;
         }
         if (!(board.validCell(row, col))) {
@@ -84,6 +86,7 @@ public class Surface extends JPanel {
             return;
         }
 
+        piece.updateAnimation(deltaTime);
         Sprite sprite = piece.getNextSprite();
         if (sprite.getSpriteSheet() == null) {
             Logger.warn("Sprite sheet is null for " + piece.toString());
@@ -99,8 +102,8 @@ public class Surface extends JPanel {
     private void drawPieces(Graphics2D g2d) {
         for (int row = 0; row < board.getBoardHeight(); row++) {
             for (int col = 0; col < board.getBoardWidth(); col++) {
-                drawPiece(g2d, board.getTerrainPiece(row, col), row, col);
-                drawPiece(g2d, board.getCharacterPiece(row, col), row, col);
+                drawPiece(g2d, board.getTerrainPiece(row, col), row, col, this.currUpdateTime);
+                drawPiece(g2d, board.getCharacterPiece(row, col), row, col, this.currUpdateTime);
             }
         }
     }

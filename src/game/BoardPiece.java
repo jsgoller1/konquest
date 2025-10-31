@@ -14,6 +14,10 @@ public abstract class BoardPiece {
 
     abstract protected void initializeSprites();
 
+    public void updateAnimation(long deltaTime) {
+        this.spriteComponent.updateAnimation(deltaTime);
+    }
+
     public Sprite getNextSprite() {
         return this.spriteComponent.getNextSprite();
     }
