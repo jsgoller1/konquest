@@ -73,25 +73,36 @@ public class Surface extends JPanel {
         return this.OFFSET + gridY * this.SQUARE_SIZE;
     }
 
-    private void drawPieces(Graphics2D g2d) {
-        for (int y = 0; y < board.getBoardHeight(); y++) {
-            for (int x = 0; x < board.getBoardWidth(); x++) {
-                BoardPiece piece = board.getBoardPiece(y, x);
-                if (piece != null) {
-                    Sprite sprite = piece.getNextSprite();
-                    if (sprite.getSpriteSheet() == null) {
-                        Logger.warn("Sprite sheet is null for " + piece.toString());
-                    }
-                    int gx = gridXToWindowX(x);
-                    int gy = gridYToWindowY(y);
-
-                    g2d.drawImage(sprite.getSpriteSheet(), gx, gy, gx + sprite.getWidth() * 2,
-                            gy + sprite.getHeight() * 2, sprite.getTopLeftX(), sprite.getTopLeftY(),
-                            sprite.getBottomRightX(), sprite.getBottomRightY(), null);
-                }
-
-            }
+    private void drawPiece(Graphics2D g2d, BoardPiece piece, int row, int col) {
+        if (piece == null) {
+            Logger.warn("No piece at Y: " + row + ", X: " + col);
+            return;
+        }
+        if (!(board.validCell(row, col))) {
+            Logger.error("Cell invalid, cannot draw. Y: " + row + ", X: " + col);
+            return;
         }
 
+        Sprite sprite = piece.getNextSprite();
+        if (sprite.getSpriteSheet() == null) {
+            Logger.warn("Sprite sheet is null for " + piece.toString());
+        }
+        int gx = gridXToWindowX(col);
+        int gy = gridYToWindowY(row);
+
+        g2d.drawImage(sprite.getSpriteSheet(), gx, gy, gx + sprite.getWidth() * 2,
+                gy + sprite.getHeight() * 2, sprite.getTopLeftX(), sprite.getTopLeftY(),
+                sprite.getBottomRightX(), sprite.getBottomRightY(), null);
+    }
+
+    private void drawPieces(Graphics2D g2d) {
+        for (int row = 0; row < board.getBoardHeight(); row++) {
+            for (int col = 0; col < board.getBoardWidth(); col++) {
+                drawPiece(g2d, board.getTerrainPiece(row, col), row, col);
+                drawPiece(g2d, board.getCharacterPiece(row, col), row, col);
+            }
+        }
     }
 }
+
+

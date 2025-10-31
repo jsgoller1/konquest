@@ -10,7 +10,11 @@ public abstract class Terrain extends BoardPiece {
         this.moveCost = moveCost;
     }
 
+    // How much does it cost to move through this tile?
     public int getMoveCost() {
         return this.moveCost;
     }
+
+    // Can a character occupy a tile with this type of terrain?
+    public abstract boolean canBeOccupied();
 }
