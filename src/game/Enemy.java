@@ -1,6 +1,6 @@
 package game;
 
-import display.Sprite;
+import sprites.Sprite;
 
 
 public class Enemy extends BoardPiece {
@@ -12,8 +12,8 @@ public class Enemy extends BoardPiece {
     static final String ENEMY_SPRITE_SHEET_PATH = "assets/Characters/Monsters/Orcs/SpearGoblin.png";
 
     @Override
-    public Sprite getNextSprite() {
-        return this.spriteComponent.loadSprite(0, 0);
+    public void initializeSprites() {
+        this.spriteComponent.loadSprite(0, 0);
     }
 
     public Enemy(String name, int health, int attack, int speed) {
@@ -22,5 +22,7 @@ public class Enemy extends BoardPiece {
         this.health = health;
         this.attack = attack;
         this.speed = speed;
+
+        this.initializeSprites();
     }
 }

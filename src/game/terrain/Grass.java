@@ -1,7 +1,7 @@
 package game.terrain;
 
 import java.util.Random;
-import display.Sprite;
+import sprites.Sprite;
 
 public class Grass extends Terrain {
     static final String GRASS_SPRITE_SHEET_PATH = "assets/Ground/TexturedGrass.png";
@@ -13,11 +13,13 @@ public class Grass extends Terrain {
         Random rand = new Random();
         spriteSheetRow = rand.nextInt(2);
         spriteSheetCol = rand.nextInt(3);
+
+        this.initializeSprites();
     }
 
     @Override
-    public Sprite getNextSprite() {
-        return this.spriteComponent.loadSprite(spriteSheetRow, spriteSheetCol);
+    public void initializeSprites() {
+        this.spriteComponent.loadSprite(spriteSheetRow, spriteSheetCol);
     }
 
     @Override

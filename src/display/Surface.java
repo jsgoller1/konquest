@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import logging.Logger;
+import sprites.Sprite;
 
 public class Surface extends JPanel {
     private GameBoard board;
