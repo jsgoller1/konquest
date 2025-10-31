@@ -1,6 +1,7 @@
 package sprites;
 
 import java.awt.image.BufferedImage;
+import logging.Logger;
 
 public class Sprite {
     private String spriteSheetPath;
@@ -56,7 +57,10 @@ public class Sprite {
         this.spriteSheet = spriteSheet;
         this.plusRows = plusRows;
         this.plusCols = plusCols;
-        this.topLeftX = row * this.SPRITE_WIDTH;
+        this.topLeftX = col * this.SPRITE_WIDTH;
         this.topLeftY = row * this.SPRITE_HEIGHT;
+
+        Logger.debug("Created new sprite sprite with: " + topLeftX + ", " + topLeftY);
+
     }
 }

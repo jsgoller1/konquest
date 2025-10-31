@@ -27,8 +27,9 @@ class Main {
         }
 
         while (GAME_RUNNING) {
+            long time = System.currentTimeMillis();
             inputManager.update(board);
-            window.update(board);
+            window.update(board, time);
 
         }
     }

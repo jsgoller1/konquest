@@ -29,8 +29,8 @@ public class Window extends JFrame {
         createAWTWindow();
     }
 
-    public void update(GameBoard board) {
-        surface.updateDisplay(board);
+    public void update(GameBoard board, long time) {
+        surface.updateDisplay(board, time);
     }
 
 

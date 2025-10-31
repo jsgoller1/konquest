@@ -10,10 +10,21 @@ public class SpriteComponent {
     private BufferedImage spriteSheet;
     private String spriteSheetPath;
     private SpriteSet spriteSet;
+    private long animationTimeDeltaMs = 0;
+    private long lastUpdateTimeMs = 0;
 
-    public SpriteComponent(String spriteSheetPath) {
+    public SpriteComponent(String spriteSheetPath, int animationTimeDeltaMs) {
         this.loadSpriteSheet(spriteSheetPath);
         this.spriteSet = new SpriteSet();
+        this.animationTimeDeltaMs = animationTimeDeltaMs;
+    }
+
+    public SpriteComponent(String spriteSheetPath) {
+        this(spriteSheetPath, Integer.MAX_VALUE);
+    }
+
+    public void setAnimationTimeDeltaMs(long animationTimeDeltaMs) {
+        this.animationTimeDeltaMs = animationTimeDeltaMs;
     }
 
     public void loadSpriteSheet(String spriteSheetPath) {
@@ -23,6 +34,15 @@ public class SpriteComponent {
             this.spriteSheetPath = spriteSheetPath;
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void updateAnimation(long updateTime) {
+        long deltaTime = Math.abs(this.lastUpdateTimeMs - updateTime);
+
+        if (deltaTime > this.animationTimeDeltaMs) {
+            Sprite sprite = this.spriteSet.nextSprite();
+            this.lastUpdateTimeMs = updateTime;
         }
     }
 

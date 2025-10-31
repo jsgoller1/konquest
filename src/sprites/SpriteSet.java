@@ -19,13 +19,16 @@ public class SpriteSet {
         this.sprites.add(sprite);
     }
 
+    public Sprite nextSprite() {
+        this.idx = (this.idx + 1) % sprites.size();
+        return this.getSprite();
+    }
+
     public Sprite getSprite() {
         if (this.sprites.isEmpty()) {
             Logger.debug("No sprites in set.");
             return null;
         }
-        Sprite sprite = sprites.get(idx);
-        idx = (idx + 1) % sprites.size();
-        return sprite;
+        return sprites.get(idx);
     }
 }
