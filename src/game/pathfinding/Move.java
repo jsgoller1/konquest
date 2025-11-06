@@ -1,4 +1,8 @@
+import java.util.*;
+import game.GameBoard;
+
 public class Move {
+    private GameBoard Board;
     private int startX;
     private int startY;
     private int endX;
@@ -6,29 +10,27 @@ public class Move {
     private int gridWidth;
     private int gridHeight;
 
-    public Move(int startX, int startY int endX, int endY){
+    public Move(int startX, int startY, int endX, int endY) {
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
+        this.Board = Board;
     }
 
     // Simple method that checks whether we are searching within boundaries
-    private boolean isValid(int x, int y) {
-        return x >= 0 && x < gridWidth && y >= 0 && y < gridHeight;
-    }
 
 
 
     public List<Pair> breadthFirstSearch() {
-        Queue<Pair> queue = new LinkedList<>();
-        Map<Pair, Pair> parent = new HashMap<>();
-        Set<Pair> visited = new HashSet<>();
+        LinkedList<Pair> queue = new LinkedList<>();
+        HashMap<Pair, Pair> parent = new HashMap<>();
+        HashSet<Pair> visited = new HashSet<>();
 
-        Pair start = new Pair(startY, startX);
-        Pair end = new Pair(endY, endX);
+        Pair start = new Pair(this.startY, this.startX);
+        Pair end = new Pair(this.endY, this.endX);
 
         queue.offer(start);
         visited.add(start);
@@ -54,7 +56,7 @@ public class Move {
                 int newY = current.getY() + dy[i];
                 Pair neighbor = new Pair(newY, newX);
 
-                if (isValid(newX, newY) && !visited.contains(neighbor)) {
+                if (validCell(newX, newY) && !visited.contains(neighbor)) {
                     queue.offer(neighbor);
                     visited.add(neighbor);
                     parent.put(neighbor, current);
@@ -81,11 +83,5 @@ public class Move {
     }
 
 
-    public static void main(String[] args) {
-        Move move3 = new Move(0, 0, 2, 3);
-        System.out.println("Path from (0,0) to (2,3):");
-        for (Position pos : move3.getPath()) {
-            System.out.println(pos);
-        }
-    }
+
 }
