@@ -1,6 +1,6 @@
 package display;
 
-import input.InputManager;
+import input.GameKeyListener;
 import javax.swing.*;
 import game.*;
 
@@ -10,7 +10,7 @@ public class Window extends JFrame {
     public static final int WIDTH = 700;
     public static final int HEIGHT = 720;
 
-    private InputManager inputManager;
+    private GameKeyListener keyListener;
     private Surface surface;
 
     private void createAWTWindow() {
@@ -24,17 +24,16 @@ public class Window extends JFrame {
         setVisible(true);
     }
 
-    public Window(InputManager inputManager) {
-        this.inputManager = inputManager;
+    public Window() {
         createAWTWindow();
         this.setFocusable(true);
         this.requestFocusInWindow();
-        this.addKeyListener(inputManager.getKeyListener());
+        this.keyListener = new GameKeyListener();
+        this.addKeyListener(this.keyListener);
     }
 
     public void update(GameBoard board, long time) {
+        board.update(keyListener, time);
         surface.updateDisplay(board, time);
     }
-
-
 }

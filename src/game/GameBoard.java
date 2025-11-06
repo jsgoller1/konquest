@@ -5,15 +5,22 @@ import java.util.Random;
 import game.terrain.Grass;
 import game.terrain.Mountain;
 import game.terrain.Terrain;
-
+import input.GameKeyListener;
 
 public class GameBoard {
     private Terrain terrainPieces[][];
     private BoardPiece characterPieces[][];
 
+    private long lastUpdateTimeMs;
+    private long delayMs = 100;
+
     private Cursor cursor;
     private int height;
     private int width;
+
+    // TODO: hate this, need one source of truth on positions
+    private int playerY;
+    private int playerX;
 
     public GameBoard(int height, int width) {
         if (height < 5 || width < 5) {
@@ -30,6 +37,63 @@ public class GameBoard {
         initializeCharacters();
     }
 
+    public void update(GameKeyListener keyListener, long time) {
+        long timeDelta = time - this.lastUpdateTimeMs;
+        if (timeDelta < delayMs) {
+            Logger.debug(String.format("Update is too soon: %d", timeDelta));
+            return;
+        }
+
+        if (keyListener.upArrowPressed()) {
+            Logger.debug("Moving player up.");
+            this.movePlayer(-1, 0);
+            this.lastUpdateTimeMs = time;
+        } else if (keyListener.downArrowPressed()) {
+            Logger.debug("Moving player down.");
+            this.movePlayer(1, 0);
+            this.lastUpdateTimeMs = time;
+        } else if (keyListener.leftArrowPressed()) {
+            Logger.debug("Moving player left.");
+            this.movePlayer(0, -1);
+            this.lastUpdateTimeMs = time;
+        } else if (keyListener.rightArrowPressed()) {
+            Logger.debug("Moving player right.");
+            this.movePlayer(0, 1);
+            this.lastUpdateTimeMs = time;
+        } else if (keyListener.spacePressed()) {
+            // TODO: attack
+            this.lastUpdateTimeMs = time;
+        }
+    }
+
+    private boolean movePlayer(int dy, int dx) {
+        if (this.moveCharacter(this.playerY, this.playerX, dy, dx)) {
+            this.playerX += dx;
+            this.playerY += dy;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean moveCharacter(int y, int x, int dy, int dx) {
+        /*
+         * This is a generic method for moving any characters - player, orcs, etc.
+         */
+        int ny = y + dy;
+        int nx = x + dx;
+        if (!(this.validCell(y, x) && this.validCell(ny, nx)
+                && this.terrainPieces[ny][nx].canBeOccupied() && this.characterPieces[y][x] != null
+                && this.characterPieces[ny][nx] == null)) {
+            Logger.debug(
+                    String.format("Not moving character from (%d, %d) to (%d, %d)", y, x, ny, nx));
+            return false;
+        }
+        BoardPiece piece = characterPieces[y][x];
+        characterPieces[y][x] = null;
+        characterPieces[y + dy][x + dx] = piece;
+        return true;
+    }
+
     private void initializeTerrain() {
         // Randomly add board pieces; this is just a proof of concept to ensure
         /// texture loading works correctly and will be scrapped
@@ -37,7 +101,7 @@ public class GameBoard {
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
                 int pick = rand.nextInt(100);
-                if (pick < 85) {
+                if (pick < 90) {
                     terrainPieces[y][x] = new Grass();
                 } else {
                     terrainPieces[y][x] = new Mountain();
@@ -58,6 +122,8 @@ public class GameBoard {
             int col = rand.nextInt(this.width);
             Terrain terrain = terrainPieces[row][col];
             if (terrain.canBeOccupied()) {
+                this.playerY = row;
+                this.playerX = col;
                 characterPieces[row][col] = new Character("Knight", 10, 10, 10);
                 placingPlayer = false;
             }
@@ -67,7 +133,8 @@ public class GameBoard {
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
                 int pick = rand.nextInt(100);
-                if (terrainPieces[y][x].canBeOccupied() && pick < 8) {
+                if (terrainPieces[y][x].canBeOccupied() && this.characterPieces[y][x] == null
+                        && pick < 2) {
                     characterPieces[y][x] = new Enemy("Enemy", 10, 10, 10);
                 }
             }
