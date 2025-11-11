@@ -2,7 +2,6 @@ package game.pathfinding;
 
 import java.util.*;
 import game.GameBoard;
-import pathfinding.Pair;
 
 public class Move {
     private GameBoard board;
@@ -10,8 +9,6 @@ public class Move {
     private int startY;
     private int endX;
     private int endY;
-    private int gridWidth;
-    private int gridHeight;
 
     public Move(int startX, int startY, int endX, int endY, GameBoard board) {
         this.startX = startX;
@@ -19,9 +16,6 @@ public class Move {
         this.endX = endX;
         this.endY = endY;
         this.board = board;
-        this.gridWidth = board.getBoardWidth();
-        this.gridHeight = board.getBoardHeight();
-
     }
 
     // Simple method that checks whether we are searching within boundaries
