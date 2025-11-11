@@ -1,8 +1,11 @@
+package game.pathfinding;
+
 import java.util.*;
 import game.GameBoard;
+import pathfinding.Pair;
 
 public class Move {
-    private GameBoard Board;
+    private GameBoard board;
     private int startX;
     private int startY;
     private int endX;
@@ -10,14 +13,15 @@ public class Move {
     private int gridWidth;
     private int gridHeight;
 
-    public Move(int startX, int startY, int endX, int endY) {
+    public Move(int startX, int startY, int endX, int endY, GameBoard board) {
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
-        this.gridWidth = gridWidth;
-        this.gridHeight = gridHeight;
-        this.Board = Board;
+        this.board = board;
+        this.gridWidth = board.getBoardWidth();
+        this.gridHeight = board.getBoardHeight();
+
     }
 
     // Simple method that checks whether we are searching within boundaries
@@ -56,7 +60,7 @@ public class Move {
                 int newY = current.getY() + dy[i];
                 Pair neighbor = new Pair(newY, newX);
 
-                if (validCell(newX, newY) && !visited.contains(neighbor)) {
+                if (this.board.validCell(newX, newY) && !visited.contains(neighbor)) {
                     queue.offer(neighbor);
                     visited.add(neighbor);
                     parent.put(neighbor, current);

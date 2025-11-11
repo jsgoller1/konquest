@@ -1,3 +1,7 @@
+package game.pathfinding;
+
+import java.util.Objects;
+
 public class Pair {
     private int Y;
     private int X;
