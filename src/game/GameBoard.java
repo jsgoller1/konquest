@@ -150,7 +150,7 @@ public class GameBoard {
                 && (terrainPieces[y][x].canBeOccupied());
     }
 
-    public BoardPiece getTerrainPiece(int y, int x) {
+    public Terrain getTerrainPiece(int y, int x) {
         if (!validCell(y, x)) {
             Logger.error(String.format("Cannot get character at (%d, %d)", x, y));
             return null;

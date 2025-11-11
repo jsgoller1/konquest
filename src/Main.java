@@ -4,6 +4,7 @@ import logging.Logger;
 import display.Window;
 import game.GameBoard;
 import game.pathfinding.*;
+import java.util.ArrayList;
 
 
 class Main {
