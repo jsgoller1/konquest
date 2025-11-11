@@ -2,6 +2,7 @@ package game;
 
 import logging.Logger;
 import java.util.Random;
+import game.enemy.Enemy;
 import game.terrain.Grass;
 import game.terrain.Mountain;
 import game.terrain.Terrain;
@@ -28,6 +29,11 @@ public class GameBoard {
         characterPieces = new BoardPiece[height][width];
         initializeTerrain();
         initializeCharacters();
+    }
+
+    public void update() {
+        for 
+
     }
 
     private void initializeTerrain() {

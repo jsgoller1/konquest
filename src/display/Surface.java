@@ -21,7 +21,7 @@ public class Surface extends JPanel {
     long currUpdateTime = 0;
 
 
-    public void updateDisplay(GameBoard board, long time) {
+    public void update(GameBoard board, long time) {
         // Surface.paintComponent() drives actual drawing, but we cannot
         // call it directly. The workflow here is:
         // update board -> call repaint() -> ??? swing magic ??? -> paintComponent() called

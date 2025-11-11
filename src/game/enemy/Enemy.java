@@ -1,5 +1,7 @@
-package game;
+package game.enemy;
 
+import game.BoardPiece;
+import game.GameBoard;
 import sprites.Sprite;
 
 
@@ -27,5 +29,9 @@ public class Enemy extends BoardPiece {
         this.speed = speed;
 
         this.initializeSprites();
+    }
+
+    public void update(GameBoard board) {
+        
     }
 }

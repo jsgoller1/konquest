@@ -30,7 +30,7 @@ public class Window extends JFrame {
     }
 
     public void update(GameBoard board, long time) {
-        surface.updateDisplay(board, time);
+        surface.update(board, time);
     }
 
 
