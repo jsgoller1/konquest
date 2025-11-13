@@ -1,78 +1,64 @@
-import java.util.List;
+package behavior;
 
-public class Behavior{
+import java.util.List;
+import game.Enemy;
+import game.GameBoard;
+
+public class Behavior {
     private static final int chaseRange = 5;
     private static final int fleeHealthThreshold = 3;
 
     private EnemyState currentState;
-    private PlayerUnit target;
-    private Enemy enemy;
+    private Character target;
+    private Enemy owner;
 
-    public Behavior(Enemy enemy){
-        this.enemy = enemy;
+    public Behavior(Enemy owner) {
+        this.owner = owner;
         this.currentState = EnemyState.SEARCHING;
-        this.target = null;
     }
 
-    public void updateBehavior(GameBoard map, List<Enemy> enemyUnits){
-        switch(currentState){
-            case SEARCHING:
-                executeSearching(map);
+    public void updateBehavior(GameBoard map, List<Enemy> enemyUnits) {
+        switch (currentState) {
+            case EnemyState.SEARCHING:
+                // executeSearching(map);
                 break;
-            case CHASING:
-                executeChasing(map);
+            case EnemyState.CHASING:
+                // executeChasing(map);
                 break;
-            case FIGHTING:
-                executeFighting();
+            case EnemyState.FIGHTING:
+                // executeFighting();
                 break;
-            case FLEEING:
-                executeFleeing(map);
+            case EnemyState.FLEEING:
+                // executeFleeing(map);
                 break;
-            case DEAD:
-                executeDead();
+            case EnemyState.DEAD:
+                // executeDead();
                 break;
         }
     }
 
-    private void checkStateTransitions(GameBoard map, List<Enemy> enemyUnits){
-        PlayerUnit nearbyPlayerUnit = findPlayerInRange(playerUnits, chaseRange);
-        if (enemy.getHealth() <= 0) {
+    private void checkStateTransitions(GameBoard map, List<Enemy> enemyUnits) {
+        // PlayerUnit nearbyPlayerUnit = findPlayerInRange(playerUnits, chaseRange);
+        if (owner.getHealth() <= 0) {
             currentState = EnemyState.DEAD;
             return;
-        } else if (enemy.getHealth() <= fleeHealthThreshold) {
+        } else if (owner.getHealth() <= fleeHealthThreshold) {
             currentState = EnemyState.FLEEING;
-        } else if (target != null && distanceToTarget(target) <= 1) {
+        } else if (target != null && map.distanceToTarget(target) <= 1) {
             currentState = EnemyState.FIGHTING;
-        } else if (target != null && distanceToTarget(target) <= chaseRange) {
+        } else if (target != null && map.distanceToTarget(target) <= chaseRange) {
             currentState = EnemyState.CHASING;
-            target = nearbyPlayerUnit;
+            // target = nearbyPlayerUnit;
             return;
-        } 
+        }
         if (currentState != EnemyState.SEARCHING) {
             currentState = EnemyState.SEARCHING;
             target = null;
         }
     }
-    // private PlayerUnit findPlayerInRange(List<character> playerUnits, int range)
+
+    // private PlayerUnit findPlayerInRange(List<character> playerUnits, int range) {}
 
 }
 
-////////////////////////////////////////////
 
-public enum EnemyState {
-    SEARCHING,   // Move randomly looking for players
-    CHASING,     // Move towards nearby player units
-    FIGHTING,    // Attack adjacent player units
-    FLEEING,     // Run to map edge when low health
-    DEAD         // No actions when dead
-}
-
-
-
-/// variables
-// distanceToPlayer
-// distanceToEdge
-// health
-
-// work on FSM
-// get pieces together
