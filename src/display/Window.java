@@ -27,6 +27,9 @@ public class Window extends JFrame {
     public Window(InputManager inputManager) {
         this.inputManager = inputManager;
         createAWTWindow();
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+        this.addKeyListener(inputManager.getKeyListener());
     }
 
     public void update(GameBoard board, long time) {
