@@ -1,78 +1,115 @@
-import java.util.List;
+package behavior;
 
-public class Behavior{
-    private static final int chaseRange = 5;
-    private static final int fleeHealthThreshold = 3;
+import java.util.List;
+import game.Enemy;
+import game.GameBoard;
+
+public class Behavior {
+    private static final int chaseRange = 5; // Might delete? Each unit might have its own range
+    private static final int fleeHealthThreshold = 3; // subject to change
 
     private EnemyState currentState;
-    private PlayerUnit target;
-    private Enemy enemy;
+    private Character target;
+    private Enemy owner;
 
-    public Behavior(Enemy enemy){
-        this.enemy = enemy;
+    public Behavior(Enemy owner) {
+        this.owner = owner;
         this.currentState = EnemyState.SEARCHING;
-        this.target = null;
     }
 
-    public void updateBehavior(GameBoard map, List<Enemy> enemyUnits){
-        switch(currentState){
-            case SEARCHING:
-                executeSearching(map);
+    public void updateBehavior(GameBoard map, List<Enemy> enemyUnits) {
+        checkStateTransitions(map, enemyUnits);
+        switch (currentState) {
+            case EnemyState.SEARCHING:
+                // executeSearching(map);
                 break;
-            case CHASING:
-                executeChasing(map);
+            case EnemyState.CHASING:
+                // executeChasing(map);
                 break;
-            case FIGHTING:
-                executeFighting();
+            case EnemyState.FIGHTING:
+                // executeFighting();
                 break;
-            case FLEEING:
-                executeFleeing(map);
+            case EnemyState.FLEEING:
+                // executeFleeing(map);
                 break;
-            case DEAD:
-                executeDead();
+            case EnemyState.DEAD:
+                // executeDead();
                 break;
         }
     }
 
-    private void checkStateTransitions(GameBoard map, List<Enemy> enemyUnits){
-        PlayerUnit nearbyPlayerUnit = findPlayerInRange(playerUnits, chaseRange);
-        if (enemy.getHealth() <= 0) {
+    private void checkStateTransitions(GameBoard map, List<Enemy> enemyUnits) {
+        // dead
+        if (owner.getHealth() <= 0) {
             currentState = EnemyState.DEAD;
             return;
-        } else if (enemy.getHealth() <= fleeHealthThreshold) {
-            currentState = EnemyState.FLEEING;
-        } else if (target != null && distanceToTarget(target) <= 1) {
-            currentState = EnemyState.FIGHTING;
-        } else if (target != null && distanceToTarget(target) <= chaseRange) {
-            currentState = EnemyState.CHASING;
-            target = nearbyPlayerUnit;
-            return;
         } 
-        if (currentState != EnemyState.SEARCHING) {
+        // fleeing
+        if (owner.getHealth() <= fleeHealthThreshold && currentState != EnemyState.FLEEING) {
+            currentState = EnemyState.FLEEING;
+            target = null;
+            return;
+        }
+
+        // if dead or fleeing, no other transitiions, otherwise...
+        if (currentState == EnemyState.DEAD || currentState == EnemyState.FLEEING) {
+            return;
+        }
+
+        // fighting
+        Character adjacentPlayer = findAdjacentPlayer(playerUnits);         // Will i need to pass playerUnits as a parameter too?
+        if(adjacentPlayer != null) {
+            currentState = EnemyState.FIGHTING;
+            target = adjacentPlayer;
+            return;
+        }
+
+        // chasing
+        Character nearbyPlayer = findPlayerInRange(playerUnits, chaseRange); // same question as above
+        if (nearbyPlayer != null) {
+            currentState = EnemyState.CHASING;
+            target = nearbyPlayer;
+            return;
+
+        }
+
+        // searching; default
+        if (currentState != EnemyState.SEARCHING) { 
             currentState = EnemyState.SEARCHING;
             target = null;
         }
     }
-    // private PlayerUnit findPlayerInRange(List<character> playerUnits, int range)
 
+    //private void executeSearching(Gameboard map) {}
+    //private void executeChasing(Gameboard map) {}
+    //private void executeFighting() {}
+    //private void executeFleeing(Gameboard map) {}
+    //private void executeDead() {}
+
+    private Character findAdjacentPlayer(List<Character> playerUnits) {
+        for (Character player : playerUnits) {
+            //
+            //
+            //
+        }
+        return null;
+    }
+
+    private Character findPlayerInRange(List<Character> playerUnits, int range) {
+        for (Character player : playerUnits) {
+            //
+            //
+            //
+        }
+        return null;
+    }
+
+    // getter methods
+    public EnemyState getCurrentState() {
+        return this.currentState;
+    }
+
+    public Character getTarget() {
+        return this.target;
+    }
 }
-
-////////////////////////////////////////////
-
-public enum EnemyState {
-    SEARCHING,   // Move randomly looking for players
-    CHASING,     // Move towards nearby player units
-    FIGHTING,    // Attack adjacent player units
-    FLEEING,     // Run to map edge when low health
-    DEAD         // No actions when dead
-}
-
-
-
-/// variables
-// distanceToPlayer
-// distanceToEdge
-// health
-
-// work on FSM
-// get pieces together

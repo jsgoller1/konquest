@@ -4,6 +4,7 @@ import logging.Logger;
 import display.Window;
 import game.GameBoard;
 import input.InputManager;
+import game.Enemy;
 
 class Main {
     private static Window window;
@@ -36,7 +37,7 @@ class Main {
 
             // To test your FSM, try mutating the state of the enemy directly 
             // here, and then print what state they're in after.
-            dummyEnemy.setHp = 0; // Example: set health to 0 to test "dead" state
+            dummyEnemy.damage(100); // Example: set health to 0 to test "dead" state
             // Print the enemy's current state, should be "dead"
         }
     }
