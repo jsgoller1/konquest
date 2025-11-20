@@ -27,23 +27,26 @@ class Main {
             GAME_RUNNING = false;
         }
 
-        /* to delete; test for Jonathan's behavior system
+        // to delete; test for Jonathan's behavior system
         List<Enemy> enemies = new ArrayList<>();
         Enemy dummy = new Enemy("Dummy", 100, 10, 5);
         enemies.add(dummy); 
-        System.out.println("Before damage: health=" + dummy.getHealth() + " state=" + dummy.getBehavior().getCurrentState());
-        dummy.damage(100); 
+        Logger.info("Before damage: health=" + dummy.getHealth() + " state=" + dummy.getBehavior().getCurrentState());
+        dummy.damage(90); 
         dummy.updateStates(board, enemies);
-        System.out.println("After damage: health=" + dummy.getHealth() + " state=" + dummy.getBehavior().getCurrentState());
+        Logger.info("After damage: health=" + dummy.getHealth() + " state=" + dummy.getBehavior().getCurrentState());
+        dummy.damage(10);
+        dummy.updateStates(board, enemies);
+        Logger.info("After damage: health=" + dummy.getHealth() + " state=" + dummy.getBehavior().getCurrentState());
         Logger.info("Enemy State: " + dummy.getBehavior().getCurrentState());
-        */
+        
 
         while (GAME_RUNNING) {
             long time = System.currentTimeMillis();
             window.update(board, time);
-            /*for (Enemy enemy : enemies) {
+            for (Enemy enemy : enemies) {
                 enemy.updateStates(board, enemies);
-            }*/
+            }
         }
     }
 }

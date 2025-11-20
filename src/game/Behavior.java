@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class Behavior {
     private static final int chaseRange = 5; // Might delete? Each unit might have its own range
-    private static final int fleeHealthThreshold = 3; // subject to change
+    private static final int fleeHealthThreshold = 10; // subject to change
 
     private EnemyState currentState;
     private Character target;
@@ -24,16 +24,16 @@ public class Behavior {
         checkStateTransitions(board, enemyUnits);
         switch (currentState) {
             case EnemyState.SEARCHING:
-                //executeSearching(board);
+                executeSearching(board);
                 break;
             case EnemyState.CHASING:
-                // executeChasing(board);
+                executeChasing(board);
                 break;
             case EnemyState.FIGHTING:
-                // executeFighting();
+                executeFighting();
                 break;
             case EnemyState.FLEEING:
-                // executeFleeing(board);
+                executeFleeing(board);
                 break;
             case EnemyState.DEAD:
                  executeDead(board);
@@ -59,6 +59,12 @@ public class Behavior {
             return;
         }
 
+        // searching: look for any players. Otherwise walk randomly; default
+        if (currentState != EnemyState.SEARCHING) { 
+            currentState = EnemyState.SEARCHING;
+            target = null;
+        }
+
         // fighting: look for adjacent player characters on the provided map
         Character adjacentPlayer = findAdjacentPlayer(board);
         if (adjacentPlayer != null) {
@@ -74,17 +80,15 @@ public class Behavior {
             target = nearbyPlayer;
             return;
         }
-
-        // searching: look for any players. Otherwise walk randomly; default
-        if (currentState != EnemyState.SEARCHING) { 
-            currentState = EnemyState.SEARCHING;
-            target = null;
-        }
     }
 
-    //private void executeSearching(GameBoard board) {}
+    private void executeSearching(GameBoard board) {
+        // move randomly
+    }
 
-    //private void executeChasing(GameBoard board) {}
+    private void executeChasing(GameBoard board) {
+        // move towards target (nearest character)
+    }
 
     private void executeFighting() {
         if (target != null) {
@@ -93,25 +97,16 @@ public class Behavior {
         }
     }
 
-    //private void executeFleeing(GameBoard board) {}
+    private void executeFleeing(GameBoard board) {
+        // move towards end of screen
+        // depending on position, move to closest edge
+        // 4 switch cases for cardinal directions?
+    }
 
-    // find owner on the provided map and remove it so it is no longer drawn
+    // find owner on the provided map and remove it so it is no longer drawn // prob doesn't need to be so long, but I don't know how to make the fail case cleaner
     private void executeDead(GameBoard board) {
-        int ownerY = -1;
-        int ownerX = -1;
-        for (int y = 0; y < board.getBoardHeight(); y++) {
-            for (int x = 0; x < board.getBoardWidth(); x++) {
-                if (board.getCharacterPiece(y, x) == owner) {
-                    ownerY = y;
-                    ownerX = x;
-                    break;
-                }
-            }
-            if (ownerY != -1) break;
-        }
-        if (ownerY == -1) return; // owner not on map
-
-        board.removeCharacterPiece(ownerY, ownerX);
+        // remove by reference — GameBoard will search and clear the piece
+        board.removeCharacterPiece(owner);
     }
 
     // Find any adjacent player characters on map // May not be needed as Grant is doing pathfinding?
