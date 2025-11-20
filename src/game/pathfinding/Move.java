@@ -54,7 +54,7 @@ public class Move {
                 Pair neighbor = new Pair(newY, newX);
 
                 if (this.board.validCell(newX, newY)) {
-                    Terrain terrain = this.board.getTerrain(newX, newY);
+                    Terrain terrain = this.board.getTerrainPiece(newX, newY);
                     if (terrain.canBeOccupied()) {
                         int moveCost = terrain.getMoveCost();
                         int newCost = current.cost + moveCost;
