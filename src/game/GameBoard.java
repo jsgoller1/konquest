@@ -166,6 +166,32 @@ public class GameBoard {
         return this.characterPieces[y][x];
     }
 
+    // removes piece // added by Jonathan
+    public void removeCharacterPiece(int y, int x) {
+        if (!validCell(y, x)) {
+            Logger.error(String.format("Cannot remove character piece at (%d, %d)", x, y));
+            return;
+        }
+        this.characterPieces[y][x] = null;
+    }
+
+    /**
+     * Remove the given piece from the board by reference. Returns true if
+     * the piece was found and removed, false otherwise.
+     */
+    public boolean removeCharacterPiece(BoardPiece piece) {
+        if (piece == null) return false;
+        for (int y = 0; y < this.getBoardHeight(); y++) {
+            for (int x = 0; x < this.getBoardWidth(); x++) {
+                if (this.characterPieces[y][x] == piece) {
+                    this.characterPieces[y][x] = null;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public int getBoardHeight() {
         return this.height;
     }
