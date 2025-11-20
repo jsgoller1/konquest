@@ -3,16 +3,16 @@ package game.terrain;
 import java.util.Random;
 import sprites.Sprite;
 
-public class Grass extends Terrain {
-    static final String GRASS_SPRITE_SHEET_PATH = "assets/Ground/TexturedGrass.png";
+public class TallGrass extends Terrain {
+    static final String TALLGRASS_SPRITE_SHEET_PATH = "assets/Nature/Wheatfield.png";
     private int spriteSheetRow;
     private int spriteSheetCol;
 
-    public Grass() {
-        super(1, GRASS_SPRITE_SHEET_PATH);
+    public TallGrass() {
+        super(1, TALLGRASS_SPRITE_SHEET_PATH);
         Random rand = new Random();
-        spriteSheetRow = rand.nextInt(2);
-        spriteSheetCol = rand.nextInt(3);
+        spriteSheetRow = 0; // rand.nextInt(1);
+        spriteSheetCol = 0; // rand.nextInt(2, 4);
 
         this.initializeSprites();
     }
@@ -29,6 +29,6 @@ public class Grass extends Terrain {
 
     @Override
     public int getMoveCost() {
-        return 1;
+        return 2;
     }
 }

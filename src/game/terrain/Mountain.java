@@ -27,4 +27,10 @@ public class Mountain extends Terrain {
     public boolean canBeOccupied() {
         return false;
     }
+
+    @Override
+    public int getMoveCost() {
+        return 99;
+    }
+
 }

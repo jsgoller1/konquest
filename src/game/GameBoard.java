@@ -4,8 +4,10 @@ import logging.Logger;
 import java.util.Random;
 import game.terrain.Grass;
 import game.terrain.Mountain;
+import game.terrain.TallGrass;
 import game.terrain.Terrain;
 import input.GameKeyListener;
+
 
 public class GameBoard {
     private Terrain terrainPieces[][];
@@ -101,8 +103,10 @@ public class GameBoard {
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
                 int pick = rand.nextInt(100);
-                if (pick < 90) {
+                if (pick < 80) {
                     terrainPieces[y][x] = new Grass();
+                } else if (pick < 90) {
+                    terrainPieces[y][x] = new TallGrass();
                 } else {
                     terrainPieces[y][x] = new Mountain();
                 }
