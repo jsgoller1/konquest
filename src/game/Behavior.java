@@ -97,7 +97,7 @@ public class Behavior {
 
     // find owner on the provided map and remove it so it is no longer drawn
     private void executeDead(GameBoard board) {
-        int ownerY = -1 
+        int ownerY = -1;
         int ownerX = -1;
         for (int y = 0; y < board.getBoardHeight(); y++) {
             for (int x = 0; x < board.getBoardWidth(); x++) {
