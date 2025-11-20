@@ -2,6 +2,7 @@ package game.pathfinding;
 
 import java.util.*;
 import game.GameBoard;
+import game.terrain.TerrainContainer;
 import game.terrain.Terrain;
 
 public class Move {
@@ -54,9 +55,9 @@ public class Move {
                 Pair neighbor = new Pair(newY, newX);
 
                 if (this.board.validCell(newX, newY)) {
-                    Terrain terrain = this.board.getTerrainPiece(newX, newY);
-                    if (terrain.canBeOccupied()) {
-                        int moveCost = terrain.getMoveCost();
+                    TerrainContainer terrainContainer = this.board.getTerrainContainer(newX, newY);
+                    if (terrainContainer.canBeOccupied()) {
+                        int moveCost = terrainContainer.getMoveCost();
                         int newCost = current.cost + moveCost;
 
                         Integer neighborDistance = distances.get(neighbor);

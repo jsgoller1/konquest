@@ -1,6 +1,8 @@
 package display;
 
 import game.*;
+import game.terrain.TerrainContainer;
+import game.terrain.Terrain;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.awt.Color;
@@ -100,10 +102,25 @@ public class Surface extends JPanel {
     }
 
     private void drawPieces(Graphics2D g2d) {
+        if (this.board == null) {
+            Logger.warn("Board is null; skipping drawing.");
+            return;
+        }
         for (int row = 0; row < board.getBoardHeight(); row++) {
             for (int col = 0; col < board.getBoardWidth(); col++) {
-                drawPiece(g2d, board.getTerrainPiece(row, col), row, col, this.currUpdateTime);
-                drawPiece(g2d, board.getCharacterPiece(row, col), row, col, this.currUpdateTime);
+                TerrainContainer container = board.getTerrainContainer(row, col);
+                BoardPiece character = board.getCharacterPiece(row, col);
+
+                for (Terrain piece : container.getBackgroundPieces()) {
+                    drawPiece(g2d, piece, row, col, this.currUpdateTime);
+                }
+
+                drawPiece(g2d, character, row, col, this.currUpdateTime);
+
+                for (Terrain piece : container.getForegroundPieces()) {
+                    drawPiece(g2d, piece, row, col, this.currUpdateTime);
+                }
+
             }
         }
     }
