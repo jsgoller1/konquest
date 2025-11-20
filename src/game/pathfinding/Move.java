@@ -2,6 +2,7 @@ package game.pathfinding;
 
 import java.util.*;
 import game.GameBoard;
+import game.terrain.Terrain;
 
 public class Move {
     private GameBoard board;
@@ -18,55 +19,70 @@ public class Move {
         this.board = board;
     }
 
-    // Simple method that checks whether we are searching within boundaries
-
-
-
-    public List<Pair> breadthFirstSearch() {
-        LinkedList<Pair> queue = new LinkedList<>();
+    public List<Pair> dijkstraSearch() {
+        PriorityQueue<NodeWithCost> queue =
+                new PriorityQueue<>(Comparator.comparingInt(n -> n.cost));
         HashMap<Pair, Pair> parent = new HashMap<>();
-        HashSet<Pair> visited = new HashSet<>();
+        HashMap<Pair, Integer> distances = new HashMap<>();
 
         Pair start = new Pair(this.startY, this.startX);
         Pair end = new Pair(this.endY, this.endX);
 
-        queue.offer(start);
-        visited.add(start);
+        distances.put(start, 0);
+        queue.offer(new NodeWithCost(start, 0));
         parent.put(start, null);
 
-        // Four directions: up, down, left, right
         int[] dx = {0, 0, -1, 1};
         int[] dy = {-1, 1, 0, 0};
 
         while (!queue.isEmpty()) {
-            Pair current = queue.poll();
+            NodeWithCost current = queue.poll();
+            Pair currentPair = current.node;
 
-            // Found the destination. Calls reconstructPath which puts all pairs into list and
-            // reverses them.
-            if (current.equals(end)) {
+            if (currentPair.equals(end)) {
                 return reconstructPath(parent, end);
             }
 
-            // adds dx and dy to current pair to find neighbors and checks whether they are valid
-            // and !visited
+            Integer currentDistance = distances.get(currentPair);
+            if (currentDistance != null && current.cost > currentDistance) {
+                continue;
+            }
+
             for (int i = 0; i < 4; i++) {
-                int newX = current.getX() + dx[i];
-                int newY = current.getY() + dy[i];
+                int newX = currentPair.getX() + dx[i];
+                int newY = currentPair.getY() + dy[i];
                 Pair neighbor = new Pair(newY, newX);
 
-                if (this.board.validCell(newX, newY) && !visited.contains(neighbor)) {
-                    queue.offer(neighbor);
-                    visited.add(neighbor);
-                    parent.put(neighbor, current);
+                if (this.board.validCell(newX, newY)) {
+                    Terrain terrain = this.board.getTerrain(newX, newY);
+                    if (terrain.canBeOccupied()) {
+                        int moveCost = terrain.getMoveCost();
+                        int newCost = current.cost + moveCost;
+
+                        Integer neighborDistance = distances.get(neighbor);
+                        if (neighborDistance == null || newCost < neighborDistance) {
+                            distances.put(neighbor, newCost);
+                            parent.put(neighbor, currentPair);
+                            queue.offer(new NodeWithCost(neighbor, newCost));
+                        }
+                    }
                 }
             }
         }
 
-        // No path found. not in Grid
         return new ArrayList<>();
     }
 
-    // reverses the pairs from end to start so we are left with the correct path: Start -> End
+    private class NodeWithCost {
+        Pair node;
+        int cost;
+
+        NodeWithCost(Pair node, int cost) {
+            this.node = node;
+            this.cost = cost;
+        }
+    }
+
     private List<Pair> reconstructPath(Map<Pair, Pair> parent, Pair end) {
         List<Pair> path = new ArrayList<>();
         Pair current = end;
@@ -79,7 +95,4 @@ public class Move {
         Collections.reverse(path);
         return path;
     }
-
-
-
 }
