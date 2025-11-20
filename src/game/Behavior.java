@@ -24,7 +24,7 @@ public class Behavior {
         checkStateTransitions(board, enemyUnits);
         switch (currentState) {
             case EnemyState.SEARCHING:
-                executeSearching(board);
+                //executeSearching(board);
                 break;
             case EnemyState.CHASING:
                 // executeChasing(board);
