@@ -166,6 +166,15 @@ public class GameBoard {
         return this.characterPieces[y][x];
     }
 
+    // removes piece // added by Jonathan
+    public void removeCharacterPiece(int y, int x) {
+        if (!validCell(y, x)) {
+            Logger.error(String.format("Cannot remove character piece at (%d, %d)", x, y));
+            return;
+        }
+        this.characterPieces[y][x] = null;
+    }
+
     public int getBoardHeight() {
         return this.height;
     }
