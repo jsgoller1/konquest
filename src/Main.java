@@ -1,6 +1,8 @@
 import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 import logging.Logger;
+import java.util.List;
+import java.util.ArrayList;
 import display.Window;
 import game.GameBoard;
 import input.InputManager;
@@ -27,18 +29,25 @@ class Main {
             GAME_RUNNING = false;
         }
 
-        Enemy dummyEnemy = new Enemy("Dummy", 100, 10, 5); // to delete
-        // Add a dummy enemy here; not actually on game board,
-            // so won't show up on screent
+        // to delete
+        List<Enemy> enemies = new ArrayList<>();
+        Enemy dummy = new Enemy("Dummy", 100, 10, 5);
+        enemies.add(dummy); 
+        System.out.println("Before damage: health=" + dummy.getHealth() + " state=" + dummy.getBehavior().getCurrentState());
+        dummy.damage(100); 
+        dummy.updateStates(board, enemies);
+        System.out.println("After damage: health=" + dummy.getHealth() + " state=" + dummy.getBehavior().getCurrentState());
+        Logger.info("Enemy State: " + dummy.getBehavior().getCurrentState());
+        // end to delete
+
         while (GAME_RUNNING) {
             long time = System.currentTimeMillis();
             inputManager.update(board);
             window.update(board, time);
-
-            // To test your FSM, try mutating the state of the enemy directly 
-            // here, and then print what state they're in after.
-            dummyEnemy.damage(100); // Example: set health to 0 to test "dead" state
-            // Print the enemy's current state, should be "dead"
+            for (Enemy enemy : enemies) {
+                enemy.updateStates(board, enemies);
+            }
+            Logger.info("Enemy State: " + dummy.getBehavior().getCurrentState());
         }
     }
 }

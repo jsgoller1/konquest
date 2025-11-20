@@ -1,5 +1,6 @@
 package game;
 
+import java.util.List;
 import sprites.Sprite;
 import behavior.Behavior;
 
@@ -33,12 +34,16 @@ public class Enemy extends BoardPiece {
         this.initializeSprites();
     }
 
-    public void updateStates(GameBoard map, List<Enemy> enemyUnits) {
-        fsm.updateBehavior(map, enemyUnits);
+    public void updateStates(GameBoard board, List<Enemy> enemyUnits) {
+        fsm.updateBehavior(board, enemyUnits);
     }
 
     public int getHealth() {
         return this.health;
+    }
+
+    public int getAttack() {
+        return this.attack;
     }
 
     public void damage(int damage) {

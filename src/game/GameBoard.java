@@ -99,6 +99,26 @@ public class GameBoard {
         return this.characterPieces[y][x];
     }
 
+    // removes piece // added by Jonathan
+    public void removeCharacterPiece(int y, int x) {
+        if (!validCell(y, x)) {
+            Logger.error(String.format("Cannot remove character piece at (%d, %d)", x, y));
+            return;
+        }
+        this.characterPieces[y][x] = null;
+    }
+
+    /** Place a BoardPiece at the given coordinates. Overwrites any existing piece.
+     *  Caller should verify validity (e.g., with cellEmpty) if needed.
+     */
+    public void setCharacterPiece(int y, int x, BoardPiece piece) {
+        if (!validCell(y, x)) {
+            Logger.error(String.format("Cannot set character piece at (%d, %d)", x, y));
+            return;
+        }
+        this.characterPieces[y][x] = piece;
+    }
+
     public int getBoardHeight() {
         return this.height;
     }
