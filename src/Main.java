@@ -18,10 +18,12 @@ class Main {
         board = new GameBoard(20, 20);
 
         try {
+            Logger.info("Creating window...");
             SwingUtilities.invokeAndWait(() -> {
                 window = new Window();
                 Logger.info("Window created!");
             });
+
         } catch (InterruptedException | InvocationTargetException e) {
             Logger.error(String.format("Couldn't create window: %s", e.getMessage()));
             GAME_RUNNING = false;
