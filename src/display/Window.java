@@ -10,6 +10,7 @@ public class Window extends JFrame {
     public static final int WIDTH = 700;
     public static final int HEIGHT = 720;
 
+    private GameBoard board;
     private GameKeyListener keyListener;
     private Surface surface;
 
@@ -19,7 +20,7 @@ public class Window extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Centered in screen
 
-        surface = new Surface();
+        this.surface = new Surface();
         add(surface);
         setVisible(true);
     }
@@ -30,10 +31,11 @@ public class Window extends JFrame {
         this.requestFocusInWindow();
         this.keyListener = new GameKeyListener();
         this.addKeyListener(this.keyListener);
+        this.board = new GameBoard(20, 20, this.keyListener);
     }
 
-    public void update(GameBoard board, long time) {
-        board.update(keyListener, time);
-        surface.updateDisplay(board, time);
+    public void update(long time) {
+        this.board.update(time);
+        this.surface.updateDisplay(board, time);
     }
 }

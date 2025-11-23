@@ -1,4 +1,4 @@
-package behavior;
+package game.ai;
 
 public enum EnemyState {
     SEARCHING, // Move randomly looking for players

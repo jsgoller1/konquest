@@ -9,13 +9,11 @@ import java.util.*;
 
 class Main {
     private static Window window;
-    private static GameBoard board;
 
     public static void main(String[] args) {
         // TODO: set logging levels and game board size via CLI args
         Logger.info("Starting game....");
         boolean GAME_RUNNING = true;
-        board = new GameBoard(20, 20);
 
         try {
             Logger.info("Creating window...");
@@ -29,26 +27,9 @@ class Main {
             GAME_RUNNING = false;
         }
 
-        // to delete; test for Jonathan's behavior system
-        List<Enemy> enemies = new ArrayList<>();
-        Enemy dummy = new Enemy(100, 10, 5);
-        enemies.add(dummy);
-        Logger.info("Before damage: health=" + dummy.getHealth() + " state="
-                + dummy.getBehavior().getCurrentState());
-        dummy.damage(90);
-        dummy.updateStates(board, enemies);
-        Logger.info("After damage: health=" + dummy.getHealth() + " state="
-                + dummy.getBehavior().getCurrentState());
-        dummy.damage(10);
-        dummy.updateStates(board, enemies);
-        Logger.info("After damage: health=" + dummy.getHealth() + " state="
-                + dummy.getBehavior().getCurrentState());
-        Logger.info("Enemy State: " + dummy.getBehavior().getCurrentState());
-
-
         while (GAME_RUNNING) {
             long time = System.currentTimeMillis();
-            window.update(board, time);
+            window.update(time);
         }
     }
 }

@@ -1,4 +1,4 @@
-package behavior;
+package game.ai;
 
 import java.util.List;
 import game.GameBoard;

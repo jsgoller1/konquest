@@ -2,6 +2,7 @@ package game;
 
 import logging.Logger;
 import java.util.Random;
+import game.ai.TurnManager;
 import game.character.Enemy;
 import game.character.Player;
 import game.terrain.Grass;
@@ -13,70 +14,52 @@ import input.GameKeyListener;
 
 
 public class GameBoard {
+    private GameKeyListener keyListener;
     private TerrainContainer terrainContainers[][];
     private BoardPiece characterPieces[][];
+    private TurnManager turnManager;
 
     private long lastUpdateTimeMs;
     private long delayMs = 100;
 
-    private Cursor cursor;
     private int height;
     private int width;
 
     // TODO: hate this, need one source of truth on positions
+    private Player player;
     private int playerY;
     private int playerX;
 
-    public GameBoard(int height, int width) {
+    public GameBoard(int height, int width, GameKeyListener keyListener) {
+        Logger.info("Creating board...");
+
         if (height < 5 || width < 5) {
             Logger.error("Board must be at least 5x5; cannot create smaller board.");
             return;
         }
-        cursor = new Cursor();
 
         this.height = height;
         this.width = width;
-        terrainContainers = new TerrainContainer[height][width];
-        characterPieces = new BoardPiece[height][width];
-        Logger.info("Initializing terrain...");
+        this.keyListener = keyListener;
+        this.terrainContainers = new TerrainContainer[height][width];
+        this.characterPieces = new BoardPiece[height][width];
+        this.turnManager = new TurnManager();
         initializeTerrain();
-        Logger.info("Initialized terrain.");
-        Logger.info("Initializing characters...");
         initializeCharacters();
-        Logger.info("Initialized characters.");
-
+        Logger.info("Board created.");
     }
 
-    public void update(GameKeyListener keyListener, long time) {
+    public void update(long time) {
         long timeDelta = time - this.lastUpdateTimeMs;
         if (timeDelta < delayMs) {
-            Logger.debug(String.format("Update is too soon: %d", timeDelta));
+            // Logger.debug(String.format("Update is too soon: %d", timeDelta));
             return;
         }
-
-        if (keyListener.upArrowPressed()) {
-            Logger.debug("Moving player up.");
-            this.movePlayer(-1, 0);
-            this.lastUpdateTimeMs = time;
-        } else if (keyListener.downArrowPressed()) {
-            Logger.debug("Moving player down.");
-            this.movePlayer(1, 0);
-            this.lastUpdateTimeMs = time;
-        } else if (keyListener.leftArrowPressed()) {
-            Logger.debug("Moving player left.");
-            this.movePlayer(0, -1);
-            this.lastUpdateTimeMs = time;
-        } else if (keyListener.rightArrowPressed()) {
-            Logger.debug("Moving player right.");
-            this.movePlayer(0, 1);
-            this.lastUpdateTimeMs = time;
-        } else if (keyListener.spacePressed()) {
-            // TODO: attack
-            this.lastUpdateTimeMs = time;
-        }
+        this.lastUpdateTimeMs = time;
+        this.turnManager.takeTurn();
     }
 
-    private boolean movePlayer(int dy, int dx) {
+    public boolean movePlayer(int dy, int dx) {
         if (this.moveCharacter(this.playerY, this.playerX, dy, dx)) {
             this.playerX += dx;
             this.playerY += dy;
@@ -85,7 +68,7 @@ public class GameBoard {
         return false;
     }
 
-    private boolean moveCharacter(int y, int x, int dy, int dx) {
+    public boolean moveCharacter(int y, int x, int dy, int dx) {
         /*
          * This is a generic method for moving any characters - player, orcs, etc.
          */
@@ -107,6 +90,7 @@ public class GameBoard {
     private void initializeTerrain() {
         // Randomly add board pieces; this is just a proof of concept to ensure
         /// texture loading works correctly and will be scrapped
+        Logger.info("Initializing terrain...");
         Random rand = new Random();
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
@@ -122,11 +106,14 @@ public class GameBoard {
                 }
             }
         }
+        Logger.info("Initialized terrain.");
     }
 
     private void initializeCharacters() {
         // Randomly add board pieces; this is just a proof of concept to ensure
         /// texture loading works correctly and will be scrapped
+        Logger.info("Initializing characters...");
+
         Random rand = new Random();
 
         // Place player
@@ -138,7 +125,9 @@ public class GameBoard {
             if (terrainContainer.canBeOccupied()) {
                 this.playerY = row;
                 this.playerX = col;
-                characterPieces[row][col] = new Player(10, 10, 10);
+                this.player = new Player(this, 10, 10, 10, this.keyListener);
+                characterPieces[row][col] = player;
+                this.turnManager.register(player);
                 placingPlayer = false;
             }
         }
@@ -149,10 +138,14 @@ public class GameBoard {
                 int pick = rand.nextInt(100);
                 if (this.terrainContainers[y][x].canBeOccupied()
                         && this.characterPieces[y][x] == null && pick < 2) {
-                    characterPieces[y][x] = new Enemy(10, 10, 10);
+                    Enemy enemy = new Enemy(this, 10, 10, 10);
+                    characterPieces[y][x] = enemy;
+                    this.turnManager.register(enemy);
+
                 }
             }
         }
+        Logger.info("Initialized characters.");
     }
 
     public boolean validCell(int y, int x) {

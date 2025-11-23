@@ -2,7 +2,7 @@ package game.character;
 
 import java.util.List;
 import sprites.Sprite;
-import behavior.Behavior;
+import game.ai.Behavior;
 import game.character.Character;
 import game.GameBoard;
 
@@ -17,14 +17,10 @@ public class Enemy extends Character {
         this.spriteComponent.setAnimationTimeDeltaMs(500);
         this.spriteComponent.loadSprite(0, 0);
         this.spriteComponent.loadSprite(0, 1);
-
     }
 
-    public Enemy(int health, int attack, int speed) {
-        super(ENEMY_SPRITE_SHEET_PATH);
-        this.health = health;
-        this.attack = attack;
-        this.speed = speed;
+    public Enemy(GameBoard board, int health, int attack, int speed) {
+        super(ENEMY_SPRITE_SHEET_PATH, board, health, attack, speed);
         this.target = null;
         this.fsm = new Behavior(this);
 
@@ -39,4 +35,7 @@ public class Enemy extends Character {
     public Behavior getBehavior() {
         return this.fsm;
     }
+
+    @Override
+    public void onTurn() {}
 }
