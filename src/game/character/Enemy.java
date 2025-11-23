@@ -38,4 +38,12 @@ public class Enemy extends Character {
 
     @Override
     public void onTurn() {}
+
+    @Override
+    public boolean isTurnCompleted() {
+        return false;
+    }
+
+    @Override
+    public void resetTurnState() {}
 }

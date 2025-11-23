@@ -32,7 +32,6 @@ public class GameBoard {
 
     public GameBoard(int height, int width, GameKeyListener keyListener) {
         Logger.info("Creating board...");
-
         if (height < 5 || width < 5) {
             Logger.error("Board must be at least 5x5; cannot create smaller board.");
             return;

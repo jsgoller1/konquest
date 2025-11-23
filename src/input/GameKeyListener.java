@@ -42,4 +42,8 @@ public class GameKeyListener implements KeyListener {
     public boolean upArrowPressed() {
         return keys[KeyCode.UP.getCode()];
     }
+
+    public boolean backspacePressed() {
+        return keys[KeyCode.BACKSPACE.getCode()];
+    }
 }

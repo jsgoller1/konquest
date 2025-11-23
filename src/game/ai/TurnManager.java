@@ -19,5 +19,11 @@ public class TurnManager {
         // TODO: This doesn't actually cycle the turn order, just confirms logic works for now.
         Character current = turnOrder.peek();
         current.onTurn();
+        if (current.isTurnCompleted()) {
+            turnOrder.removeUnit(current);
+        }
+        current.resetTurnState();
+        turnOrder.addUnit(current);
+
     }
 }
