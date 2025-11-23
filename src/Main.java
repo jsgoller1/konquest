@@ -6,6 +6,7 @@ import game.GameBoard;
 import game.character.Enemy;
 import game.pathfinding.*;
 import java.util.*;
+import game.MusicPlayer;
 
 class Main {
     private static Window window;
@@ -27,9 +28,13 @@ class Main {
             GAME_RUNNING = false;
         }
 
+        MusicPlayer music = new MusicPlayer();
+        music.playTrack("assets\\Music\\The Legend of Zelda_ Tears of the Kingdom - Main Theme.wav",
+                true);
         while (GAME_RUNNING) {
             long time = System.currentTimeMillis();
             window.update(time);
         }
+        music.stopTrack();
     }
 }
