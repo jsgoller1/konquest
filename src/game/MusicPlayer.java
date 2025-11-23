@@ -9,6 +9,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 // Simple MusicPlayer using Java Sound. Plays WAV/PCM audio files and supports looping.
 public class MusicPlayer {
@@ -18,6 +19,22 @@ public class MusicPlayer {
     public MusicPlayer() {
         this.clip = null;
         this.volumeControl = null;
+    }
+
+    public void start() {
+        Random rand = new Random();
+        int pick = rand.nextInt(2);
+        switch (pick) {
+            case 0:
+                playTrack("assets/Music/fgo-between-light-dark.wav", true);
+                break;
+            case 1:
+                playTrack("assets/Music/granblue-armageddon.wav", true);
+                break;
+            case 2:
+                playTrack("assets/Music/zelda-totk-main.wav", true);
+                break;
+        }
     }
 
     /**
