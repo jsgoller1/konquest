@@ -38,4 +38,8 @@ public class Window extends JFrame {
         this.board.update(time);
         this.surface.updateDisplay(board, time);
     }
+
+    public boolean isGameComplete() {
+        return this.board.isGameComplete();
+    }
 }

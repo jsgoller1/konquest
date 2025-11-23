@@ -1,6 +1,7 @@
 package game;
 
 import logging.Logger;
+import java.io.Console;
 import java.util.Random;
 import game.ai.TurnManager;
 import game.character.Enemy;
@@ -21,14 +22,17 @@ public class GameBoard {
 
     private long lastUpdateTimeMs;
     private long delayMs = 100;
+    private boolean quitNow = false;
 
     private int height;
     private int width;
 
     // TODO: hate this, need one source of truth on positions
     private Player player;
+    private int playerCount;
     private int playerY;
     private int playerX;
+    private int enemyCount;
 
     public GameBoard(int height, int width, GameKeyListener keyListener) {
         Logger.info("Creating board...");
@@ -55,6 +59,11 @@ public class GameBoard {
             // Logger.debug(String.format("Update is too soon: %d", timeDelta));
             return;
         }
+        if (this.keyListener.escapePressed()) {
+            Logger.debug("Escape pressed - quitting!");
+            this.quitNow = true;
+        }
+
         this.lastUpdateTimeMs = time;
         this.turnManager.takeTurn();
     }
@@ -131,16 +140,16 @@ public class GameBoard {
                 placingPlayer = false;
             }
         }
+        this.playerCount++;
 
         // Place enemies
-        int enemyCount = 0;
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
                 int pick = rand.nextInt(100);
                 if (this.terrainContainers[y][x].canBeOccupied()
                         && this.characterPieces[y][x] == null && pick < 2) {
                     Enemy enemy = new Enemy(this, 10, 10, 10);
-                    enemy.setName(String.format("%s-%d", enemy.getName(), ++enemyCount));
+                    enemy.setName(String.format("%s-%d", enemy.getName(), ++this.enemyCount));
                     characterPieces[y][x] = enemy;
                     this.turnManager.register(enemy);
 
@@ -208,5 +217,9 @@ public class GameBoard {
 
     public int getBoardWidth() {
         return this.width;
+    }
+
+    public boolean isGameComplete() {
+        return this.quitNow || this.playerCount == 0 || this.enemyCount == 0;
     }
 }
