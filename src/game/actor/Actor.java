@@ -10,6 +10,8 @@ abstract public class Actor extends BoardPiece {
     protected int health;
     protected int attack;
     protected int speed;
+    protected int movesRemaining;
+    protected boolean hasAttacked;
 
     protected Actor(String spriteSheetPath, GameBoard board, String name, int health, int attack,
             int speed) {
@@ -19,6 +21,8 @@ abstract public class Actor extends BoardPiece {
         this.health = health;
         this.attack = attack;
         this.speed = speed;
+        this.movesRemaining = speed;
+        this.hasAttacked = false;
     }
 
     public String getName() {
@@ -41,5 +45,22 @@ abstract public class Actor extends BoardPiece {
         this.health -= damage;
     }
 
+    public int getMovesRemaining() {
+        return this.movesRemaining;
+    }
+
+    // What should the character do on their turn?
     abstract public void onTurn();
+
+    // Has this character done everything they could choose to do on their turn?
+    // By default, that's "moved as much as possible and attacked"
+    public boolean isTurnCompleted() {
+        return this.movesRemaining == 0 && this.hasAttacked;
+    }
+
+    // Reset the things the character can do per turn in prep for next turn
+    public void resetTurnState() {
+        this.movesRemaining = this.speed;
+        this.hasAttacked = false;
+    }
 }

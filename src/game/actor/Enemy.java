@@ -27,15 +27,24 @@ public class Enemy extends Actor {
         this.initializeSprites();
     }
 
-    public void updateStates(GameBoard board, List<Enemy> enemyUnits) {
-        fsm.updateBehavior(board, enemyUnits);
-    }
-
-    // getter methods
-    public Behavior getBehavior() {
-        return this.fsm;
-    }
-
     @Override
-    public void onTurn() {}
+    public void onTurn() {
+        // TODO: Remove this; this is just code allowing for automatic turn cycling.
+        this.movesRemaining = 0;
+        this.hasAttacked = true;
+
+        this.fsm.updateState();
+        this.fsm.executeStateBehavior();
+    }
+
+    public Player findAdjacentPlayer() {
+        // If any player is one square away, returns them. Otherwise null.
+        return null;
+    }
+
+    public Player findNearestPlayer() {
+        // Get nearest player to this one
+        return null;
+    }
+
 }

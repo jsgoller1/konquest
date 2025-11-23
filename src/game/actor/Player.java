@@ -38,27 +38,39 @@ public class Player extends Actor {
         this.health -= damage;
     }
 
+    private void move(int dy, int dx) {
+        Logger.debug(String.format("Moving player dy=%d, dx=%d", dy, dx));
+        if (movesRemaining > 0 && board.moveActor(this, dy, dx)) {
+            this.movesRemaining--;
+        }
+    }
+
     @Override
     public void onTurn() {
         if (keyListener.upArrowPressed()) {
-            Logger.debug("Moving player up.");
-            board.moveActor(this, -1, 0);
-            // this.lastUpdateTimeMs = time;
+            this.move(-1, 0);
         } else if (keyListener.downArrowPressed()) {
-            Logger.debug("Moving player down.");
-            board.moveActor(this, 1, 0);
-            // this.lastUpdateTimeMs = time;
+            this.move(1, 0);
         } else if (keyListener.leftArrowPressed()) {
-            Logger.debug("Moving player left.");
-            board.moveActor(this, 0, -1);
-            // this.lastUpdateTimeMs = time;
+            this.move(0, -1);
         } else if (keyListener.rightArrowPressed()) {
-            Logger.debug("Moving player right.");
-            board.moveActor(this, 0, 1);
-            // this.lastUpdateTimeMs = time;
+            this.move(0, 1);
         } else if (keyListener.spacePressed()) {
-            // TODO: attack
-            // this.lastUpdateTimeMs = time;
+            Logger.debug("Player attacking...");
+            if (!this.hasAttacked) {
+                Logger.debug("Player attacks!");
+                // TODO: attack
+                this.hasAttacked = true;
+            }
+        } else if (keyListener.backspacePressed()) {
+            Logger.debug("Ending player's turn.");
+            this.movesRemaining = 0;
+            this.hasAttacked = true;
         }
+    }
+
+    @Override
+    public boolean isTurnCompleted() {
+        return this.movesRemaining == 0 && this.hasAttacked;
     }
 }

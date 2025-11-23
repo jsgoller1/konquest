@@ -19,7 +19,7 @@ public class TurnManager {
         this.turnOrder.addUnit(actor);
     }
 
-    public void deregister(Actor character) {}
+    public void deregister(Actor actor) {}
 
     public void takeTurn() {
         // TODO: This doesn't actually cycle the turn order, just confirms logic works for now.
@@ -30,5 +30,11 @@ public class TurnManager {
         // NOTE: This runs on every loop; be careful about overwhelming output.
         // Logger.debug(String.format("%s taking turn.", current.getName()));
         current.onTurn();
+        if (current.isTurnCompleted()) {
+            Logger.info(String.format("%s turn complete. Cycling.", current.getName()));
+            turnOrder.removeUnit(current);
+            current.resetTurnState();
+            turnOrder.addUnit(current);
+        }
     }
 }

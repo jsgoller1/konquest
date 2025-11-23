@@ -46,4 +46,8 @@ public class GameKeyListener implements KeyListener {
     public boolean escapePressed() {
         return keys[KeyCode.ESCAPE.getCode()];
     }
+
+    public boolean backspacePressed() {
+        return keys[KeyCode.BACKSPACE.getCode()];
+    }
 }

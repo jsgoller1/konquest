@@ -36,7 +36,6 @@ public class GameBoard {
 
     public GameBoard(int height, int width, GameKeyListener keyListener) {
         Logger.info("Creating board...");
-
         if (height < 5 || width < 5) {
             Logger.error("Board must be at least 5x5; cannot create smaller board.");
             return;
@@ -133,14 +132,15 @@ public class GameBoard {
                 if (this.canBeOccupied(y, x) && pick < 2) {
                     // Place enemies on the top half of the board
                     if (y > this.height / 2) {
-                        Enemy enemy = new Enemy(this, 10, 10, 10);
+                        // TODO: For now, skip over enemy creation; just want to test player stuff.
+                        Enemy enemy = new Enemy(this, 10, 10, 4);
                         enemy.setName(String.format("%s-%d", enemy.getName(), ++this.enemyCount));
                         actors[y][x] = enemy;
                         this.positionCache.put(enemy, new Position(y, x));
                         this.turnManager.register(enemy);
                     } else {
                         // Place players on the bottom half
-                        Player player = new Player(this, 10, 10, 10, this.keyListener);
+                        Player player = new Player(this, 10, 10, 4, this.keyListener);
                         player.setName(
                                 String.format("%s-%d", player.getName(), ++this.playerCount));
                         actors[y][x] = player;
@@ -208,6 +208,28 @@ public class GameBoard {
             return false;
         }
         return this.removeActor(position.y, position.x);
+    }
+
+    public Player getNearestPlayer(Enemy source) {
+        // Get closest player to an enemy based on Euclidean distance
+        // TODO: this can and probably should be made generic, but
+        // for now we only need it for finding players
+        double best = Integer.MAX_VALUE;
+        Player bestPlayer = null;
+        Position start = this.positionCache.get(source);
+        for (Actor actor : this.positionCache.keySet()) {
+            if (actor instanceof Player) {
+                Position target = this.positionCache.get(actor);
+                int xDistance = (start.x - target.x);
+                int yDistance = (start.y - target.y);
+                double distance = Math.sqrt(xDistance * xDistance + yDistance * yDistance);
+                if (distance <= best) {
+                    bestPlayer = (Player) actor;
+                    best = distance;
+                }
+            }
+        }
+        return bestPlayer;
     }
 
     public int getBoardHeight() {

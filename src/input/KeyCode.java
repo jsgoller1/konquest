@@ -1,7 +1,7 @@
 package input;
 
 public enum KeyCode {
-    SPACE(32), UP(38), DOWN(40), LEFT(37), RIGHT(39), ESCAPE(27);
+    BACKSPACE(8), ESCAPE(27), SPACE(32), LEFT(37), UP(38), RIGHT(39), DOWN(40);
 
     private final int code;
 

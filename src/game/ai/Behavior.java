@@ -20,28 +20,7 @@ public class Behavior {
         this.currentState = EnemyState.SEARCHING;
     }
 
-    public void updateBehavior(GameBoard board, List<Enemy> enemyUnits) {
-        checkStateTransitions(board, enemyUnits);
-        switch (currentState) {
-            case EnemyState.SEARCHING:
-                executeSearching(board);
-                break;
-            case EnemyState.CHASING:
-                executeChasing(board);
-                break;
-            case EnemyState.FIGHTING:
-                executeFighting();
-                break;
-            case EnemyState.FLEEING:
-                executeFleeing(board);
-                break;
-            case EnemyState.DEAD:
-                executeDead(board);
-                break;
-        }
-    }
-
-    private void checkStateTransitions(GameBoard board, List<Enemy> enemyUnits) {
+    public void updateState() {
         // dead
         if (owner.getHealth() <= 0) {
             currentState = EnemyState.DEAD;
@@ -66,7 +45,7 @@ public class Behavior {
         }
 
         // fighting: look for adjacent player characters on the provided map
-        Player adjacentPlayer = findAdjacentPlayer(board);
+        Player adjacentPlayer = findAdjacentPlayer();
         if (adjacentPlayer != null) {
             currentState = EnemyState.FIGHTING;
             target = adjacentPlayer;
@@ -74,7 +53,7 @@ public class Behavior {
         }
 
         // chasing: look for any player within chaseRange on the map
-        Player nearbyPlayer = findPlayerInRange(board, chaseRange);
+        Player nearbyPlayer = findPlayerInRange(chaseRange);
         if (nearbyPlayer != null) {
             currentState = EnemyState.CHASING;
             target = nearbyPlayer;
@@ -82,11 +61,32 @@ public class Behavior {
         }
     }
 
-    private void executeSearching(GameBoard board) {
+
+    public void executeStateBehavior() {
+        switch (currentState) {
+            case EnemyState.SEARCHING:
+                executeSearching();
+                break;
+            case EnemyState.CHASING:
+                executeChasing();
+                break;
+            case EnemyState.FIGHTING:
+                executeFighting();
+                break;
+            case EnemyState.FLEEING:
+                executeFleeing();
+                break;
+            case EnemyState.DEAD:
+                executeDead();
+                break;
+        }
+    }
+
+    private void executeSearching() {
         // move randomly
     }
 
-    private void executeChasing(GameBoard board) {
+    private void executeChasing() {
         // move towards target (nearest character)
     }
 
@@ -97,7 +97,7 @@ public class Behavior {
         }
     }
 
-    private void executeFleeing(GameBoard board) {
+    private void executeFleeing() {
         // move towards end of screen
         // depending on position, move to closest edge
         // 4 switch cases for cardinal directions?
@@ -105,75 +105,75 @@ public class Behavior {
 
     // find owner on the provided map and remove it so it is no longer drawn // prob doesn't need to
     // be so long, but I don't know how to make the fail case cleaner
-    private void executeDead(GameBoard board) {
+    private void executeDead() {
         // remove by reference — GameBoard will search and clear the piece
-        board.removeActor(owner);
+        // board.removeActor(owner);
     }
 
     // Find any adjacent player characters on map // May not be needed as Grant is doing
     // pathfinding?
-    private Player findAdjacentPlayer(GameBoard board) {
-        int ownerY = -1;
-        int ownerX = -1;
-        for (int y = 0; y < board.getBoardHeight(); y++) {
-            for (int x = 0; x < board.getBoardWidth(); x++) {
-                if (board.getActor(y, x) == owner) {
-                    ownerY = y;
-                    ownerX = x;
-                    break;
-                }
-            }
-            if (ownerY != -1)
-                break;
-        }
-        if (ownerY == -1)
-            return null; // owner not placed on map
+    private Player findAdjacentPlayer() {
+        // int ownerY = -1;
+        // int ownerX = -1;
+        // for (int y = 0; y < board.getBoardHeight(); y++) {
+        // for (int x = 0; x < board.getBoardWidth(); x++) {
+        // if (board.getActor(y, x) == owner) {
+        // ownerY = y;
+        // ownerX = x;
+        // break;
+        // }
+        // }
+        // if (ownerY != -1)
+        // break;
+        // }
+        // if (ownerY == -1)
+        // return null; // owner not placed on map
 
-        // Check 4 neighbors: up, down, left, right
-        int[][] neigh = {{ownerY - 1, ownerX}, {ownerY + 1, ownerX}, {ownerY, ownerX - 1},
-                {ownerY, ownerX + 1}};
-        for (int[] n : neigh) {
-            int ny = n[0], nx = n[1];
-            if (!board.validCell(ny, nx))
-                continue;
-            Actor p = board.getActor(ny, nx);
-            if (p instanceof Player) {
-                return (Player) p;
-            }
-        }
+        // // Check 4 neighbors: up, down, left, right
+        // int[][] neigh = {{ownerY - 1, ownerX}, {ownerY + 1, ownerX}, {ownerY, ownerX - 1},
+        // {ownerY, ownerX + 1}};
+        // for (int[] n : neigh) {
+        // int ny = n[0], nx = n[1];
+        // if (!board.validCell(ny, nx))
+        // continue;
+        // Actor p = board.getActor(ny, nx);
+        // if (p instanceof Player) {
+        // return (Player) p;
+        // }
+        // }
         return null;
     }
 
     // Find any player character within given range on map // // May not be needed as Grant is doing
     // pathfinding?
-    private Player findPlayerInRange(GameBoard board, int range) {
-        int ownerY = -1;
-        int ownerX = -1;
-        for (int y = 0; y < board.getBoardHeight(); y++) {
-            for (int x = 0; x < board.getBoardWidth(); x++) {
-                if (board.getActor(y, x) == owner) {
-                    ownerY = y;
-                    ownerX = x;
-                    break;
-                }
-            }
-            if (ownerY != -1)
-                break;
-        }
+    private Player findPlayerInRange(int range) {
+        // int ownerY = -1;
+        // int ownerX = -1;
+        // for (int y = 0; y < board.getBoardHeight(); y++) {
+        // for (int x = 0; x < board.getBoardWidth(); x++) {
+        // if (board.getActor(y, x) == owner) {
+        // ownerY = y;
+        // ownerX = x;
+        // break;
+        // }
+        // }
+        // if (ownerY != -1)
+        // break;
+        // }
 
-        if (ownerY == -1)
-            return null;
+        // if (ownerY == -1)
+        // return null;
 
-        for (int y = 0; y < board.getBoardHeight(); y++) {
-            for (int x = 0; x < board.getBoardWidth(); x++) {
-                Actor p = board.getActor(y, x);
-                if (p instanceof Player) {
-                    int dist = Math.abs(ownerY - y) + Math.abs(ownerX - x);
-                    if (dist <= range)
-                        return (Player) p;
-                }
-            }
-        }
+        // for (int y = 0; y < board.getBoardHeight(); y++) {
+        // for (int x = 0; x < board.getBoardWidth(); x++) {
+        // Actor p = board.getActor(y, x);
+        // if (p instanceof Player) {
+        // int dist = Math.abs(ownerY - y) + Math.abs(ownerX - x);
+        // if (dist <= range)
+        // return (Player) p;
+        // }
+        // }
+        // }
 
         return null;
     }
