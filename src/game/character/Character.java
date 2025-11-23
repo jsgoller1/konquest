@@ -5,18 +5,28 @@ import game.GameBoard;
 import sprites.SpriteComponent;
 
 abstract public class Character extends BoardPiece {
+    protected String name;
     protected GameBoard board;
     protected int health;
     protected int attack;
     protected int speed;
 
-    protected Character(String spriteSheetPath, GameBoard board, int health, int attack,
-            int speed) {
+    protected Character(String spriteSheetPath, GameBoard board, String name, int health,
+            int attack, int speed) {
         super(spriteSheetPath);
         this.board = board;
+        this.name = name;
         this.health = health;
         this.attack = attack;
         this.speed = speed;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String newName) {
+        this.name = newName;
     }
 
     public int getHealth() {

@@ -133,12 +133,14 @@ public class GameBoard {
         }
 
         // Place enemies
+        int enemyCount = 0;
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
                 int pick = rand.nextInt(100);
                 if (this.terrainContainers[y][x].canBeOccupied()
                         && this.characterPieces[y][x] == null && pick < 2) {
                     Enemy enemy = new Enemy(this, 10, 10, 10);
+                    enemy.setName(String.format("%s-%d", enemy.getName(), ++enemyCount));
                     characterPieces[y][x] = enemy;
                     this.turnManager.register(enemy);
 

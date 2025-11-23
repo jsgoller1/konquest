@@ -20,7 +20,7 @@ public class Enemy extends Character {
     }
 
     public Enemy(GameBoard board, int health, int attack, int speed) {
-        super(ENEMY_SPRITE_SHEET_PATH, board, health, attack, speed);
+        super(ENEMY_SPRITE_SHEET_PATH, board, "Enemy", health, attack, speed);
         this.target = null;
         this.fsm = new Behavior(this);
 

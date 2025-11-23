@@ -21,7 +21,7 @@ public class Player extends Character {
     }
 
     public Player(GameBoard board, int health, int attack, int speed, GameKeyListener keyListener) {
-        super(CHARACTER_SPRITE_SHEET_PATH, board, health, attack, speed);
+        super(CHARACTER_SPRITE_SHEET_PATH, board, "Player", health, attack, speed);
         this.keyListener = keyListener;
         this.initializeSprites();
     }
