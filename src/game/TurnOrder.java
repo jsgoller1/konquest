@@ -2,8 +2,6 @@ package game;
 
 import java.util.PriorityQueue;
 
-
-
 public class TurnOrder { // Takes in an array of units to initialize the turn order
     private PriorityQueue<BoardPiece> priorityQueue;
 
@@ -14,23 +12,14 @@ public class TurnOrder { // Takes in an array of units to initialize the turn or
         }
     }
 
-
     public void addUnit(BoardPiece piece) { // Adds a unit to the turn order
         priorityQueue.add(piece);
     }
 
-
-
-
-
-    public void removeUnit(BoardPiece piece) { // removed a unit from the turn order (does it also "kill" the unit / clean up?)
+    public void removeUnit(BoardPiece piece) { // removed a unit from the turn order (does it also
+                                               // "kill" the unit / clean up?)
         priorityQueue.remove(piece);
     }
-
-
-
-
-
 
     public BoardPiece getNextUnit() { // returns the next unit in the turn order
         BoardPiece nextUnit = priorityQueue.poll();
@@ -38,5 +27,3 @@ public class TurnOrder { // Takes in an array of units to initialize the turn or
         return nextUnit;
     }
 }
-
-

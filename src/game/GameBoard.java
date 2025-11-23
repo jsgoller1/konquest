@@ -8,11 +8,13 @@ import game.terrain.TallGrass;
 import game.terrain.Terrain;
 import game.terrain.TerrainContainer;
 import input.GameKeyListener;
+import game.TurnOrder;
 
 
 public class GameBoard {
     private TerrainContainer terrainContainers[][];
     private BoardPiece characterPieces[][];
+    private TurnOrder turnQueue;
 
     private long lastUpdateTimeMs;
     private long delayMs = 100;
@@ -36,6 +38,7 @@ public class GameBoard {
         this.width = width;
         terrainContainers = new TerrainContainer[height][width];
         characterPieces = new BoardPiece[height][width];
+        turnQueue = new TurnOrder();
         Logger.info("Initializing terrain...");
         initializeTerrain();
         Logger.info("Initialized terrain.");
@@ -51,7 +54,10 @@ public class GameBoard {
             Logger.debug(String.format("Update is too soon: %d", timeDelta));
             return;
         }
+        handleInput(keyListener);
+    }
 
+    private handleInput(GameKeyListener keyListener){
         if (keyListener.upArrowPressed()) {
             Logger.debug("Moving player up.");
             this.movePlayer(-1, 0);
