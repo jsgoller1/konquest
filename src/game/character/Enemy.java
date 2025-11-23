@@ -1,15 +1,13 @@
-package game;
+package game.character;
 
 import java.util.List;
 import sprites.Sprite;
 import behavior.Behavior;
+import game.character.Character;
+import game.GameBoard;
 
-public class Enemy extends BoardPiece {
-    private String name;
-    private int health;
-    private int attack;
-    private int speed;
-    private Character target;
+public class Enemy extends Character {
+    private Player target;
     private Behavior fsm;
 
     static final String ENEMY_SPRITE_SHEET_PATH = "assets/Characters/Monsters/Orcs/SpearGoblin.png";
@@ -22,9 +20,8 @@ public class Enemy extends BoardPiece {
 
     }
 
-    public Enemy(String name, int health, int attack, int speed) {
+    public Enemy(int health, int attack, int speed) {
         super(ENEMY_SPRITE_SHEET_PATH);
-        this.name = name;
         this.health = health;
         this.attack = attack;
         this.speed = speed;
@@ -36,18 +33,6 @@ public class Enemy extends BoardPiece {
 
     public void updateStates(GameBoard board, List<Enemy> enemyUnits) {
         fsm.updateBehavior(board, enemyUnits);
-    }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public int getAttack() {
-        return this.attack;
-    }
-
-    public void damage(int damage) {
-        this.health -= damage;
     }
 
     // getter methods

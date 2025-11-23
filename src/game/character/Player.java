@@ -1,13 +1,11 @@
-package game;
+package game.character;
 
+import game.character.Character;
 import sprites.Sprite;
 
 
-public class Character extends BoardPiece {
-    private String name;
-    private int health;
-    private int attack;
-    private int speed;
+public class Player extends Character {
+
 
     static final String CHARACTER_SPRITE_SHEET_PATH =
             "assets/Characters/Soldiers/Melee/RedMelee/SwordsmanRed.png";
@@ -19,9 +17,8 @@ public class Character extends BoardPiece {
         this.spriteComponent.loadSprite(0, 1);
     }
 
-    public Character(String name, int health, int attack, int speed) {
+    public Player(int health, int attack, int speed) {
         super(CHARACTER_SPRITE_SHEET_PATH);
-        this.name = name;
         this.health = health;
         this.attack = attack;
         this.speed = speed;
@@ -29,7 +26,7 @@ public class Character extends BoardPiece {
         this.initializeSprites();
     }
 
-     public int getHealth() {
+    public int getHealth() {
         return this.health;
     }
 

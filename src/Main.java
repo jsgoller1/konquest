@@ -3,9 +3,9 @@ import javax.swing.SwingUtilities;
 import logging.Logger;
 import display.Window;
 import game.GameBoard;
+import game.character.Enemy;
 import game.pathfinding.*;
 import java.util.*;
-import game.Enemy;
 
 class Main {
     private static Window window;
@@ -31,7 +31,7 @@ class Main {
 
         // to delete; test for Jonathan's behavior system
         List<Enemy> enemies = new ArrayList<>();
-        Enemy dummy = new Enemy("Dummy", 100, 10, 5);
+        Enemy dummy = new Enemy(100, 10, 5);
         enemies.add(dummy);
         Logger.info("Before damage: health=" + dummy.getHealth() + " state="
                 + dummy.getBehavior().getCurrentState());
@@ -49,9 +49,6 @@ class Main {
         while (GAME_RUNNING) {
             long time = System.currentTimeMillis();
             window.update(board, time);
-            for (Enemy enemy : enemies) {
-                enemy.updateStates(board, enemies);
-            }
         }
     }
 }

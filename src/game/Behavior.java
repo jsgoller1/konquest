@@ -1,9 +1,9 @@
 package behavior;
 
 import java.util.List;
-import game.Enemy;
 import game.GameBoard;
-import game.Character;
+import game.character.Enemy;
+import game.character.Player;
 import game.BoardPiece;
 import java.util.Random;
 
@@ -12,7 +12,7 @@ public class Behavior {
     private static final int fleeHealthThreshold = 10; // subject to change
 
     private EnemyState currentState;
-    private Character target;
+    private Player target;
     private Enemy owner;
 
     public Behavior(Enemy owner) {
@@ -36,7 +36,7 @@ public class Behavior {
                 executeFleeing(board);
                 break;
             case EnemyState.DEAD:
-                 executeDead(board);
+                executeDead(board);
                 break;
         }
     }
@@ -46,7 +46,7 @@ public class Behavior {
         if (owner.getHealth() <= 0) {
             currentState = EnemyState.DEAD;
             return;
-        } 
+        }
         // fleeing
         if (owner.getHealth() <= fleeHealthThreshold && currentState != EnemyState.FLEEING) {
             currentState = EnemyState.FLEEING;
@@ -60,13 +60,13 @@ public class Behavior {
         }
 
         // searching: look for any players. Otherwise walk randomly; default
-        if (currentState != EnemyState.SEARCHING) { 
+        if (currentState != EnemyState.SEARCHING) {
             currentState = EnemyState.SEARCHING;
             target = null;
         }
 
         // fighting: look for adjacent player characters on the provided map
-        Character adjacentPlayer = findAdjacentPlayer(board);
+        Player adjacentPlayer = findAdjacentPlayer(board);
         if (adjacentPlayer != null) {
             currentState = EnemyState.FIGHTING;
             target = adjacentPlayer;
@@ -74,7 +74,7 @@ public class Behavior {
         }
 
         // chasing: look for any player within chaseRange on the map
-        Character nearbyPlayer = findPlayerInRange(board, chaseRange);
+        Player nearbyPlayer = findPlayerInRange(board, chaseRange);
         if (nearbyPlayer != null) {
             currentState = EnemyState.CHASING;
             target = nearbyPlayer;
@@ -103,14 +103,16 @@ public class Behavior {
         // 4 switch cases for cardinal directions?
     }
 
-    // find owner on the provided map and remove it so it is no longer drawn // prob doesn't need to be so long, but I don't know how to make the fail case cleaner
+    // find owner on the provided map and remove it so it is no longer drawn // prob doesn't need to
+    // be so long, but I don't know how to make the fail case cleaner
     private void executeDead(GameBoard board) {
         // remove by reference — GameBoard will search and clear the piece
         board.removeCharacterPiece(owner);
     }
 
-    // Find any adjacent player characters on map // May not be needed as Grant is doing pathfinding?
-    private Character findAdjacentPlayer(GameBoard board) {
+    // Find any adjacent player characters on map // May not be needed as Grant is doing
+    // pathfinding?
+    private Player findAdjacentPlayer(GameBoard board) {
         int ownerY = -1;
         int ownerX = -1;
         for (int y = 0; y < board.getBoardHeight(); y++) {
@@ -121,25 +123,30 @@ public class Behavior {
                     break;
                 }
             }
-            if (ownerY != -1) break;
+            if (ownerY != -1)
+                break;
         }
-        if (ownerY == -1) return null; // owner not placed on map
+        if (ownerY == -1)
+            return null; // owner not placed on map
 
         // Check 4 neighbors: up, down, left, right
-        int[][] neigh = { {ownerY-1, ownerX}, {ownerY+1, ownerX}, {ownerY, ownerX-1}, {ownerY, ownerX+1} };
+        int[][] neigh = {{ownerY - 1, ownerX}, {ownerY + 1, ownerX}, {ownerY, ownerX - 1},
+                {ownerY, ownerX + 1}};
         for (int[] n : neigh) {
             int ny = n[0], nx = n[1];
-            if (!board.validCell(ny, nx)) continue;
+            if (!board.validCell(ny, nx))
+                continue;
             BoardPiece p = board.getCharacterPiece(ny, nx);
-            if (p instanceof Character) {
-                return (Character) p;
+            if (p instanceof Player) {
+                return (Player) p;
             }
         }
         return null;
     }
 
-    // Find any player character within given range on map // // May not be needed as Grant is doing pathfinding?
-    private Character findPlayerInRange(GameBoard board, int range) {
+    // Find any player character within given range on map // // May not be needed as Grant is doing
+    // pathfinding?
+    private Player findPlayerInRange(GameBoard board, int range) {
         int ownerY = -1;
         int ownerX = -1;
         for (int y = 0; y < board.getBoardHeight(); y++) {
@@ -150,17 +157,20 @@ public class Behavior {
                     break;
                 }
             }
-            if (ownerY != -1) break;
+            if (ownerY != -1)
+                break;
         }
 
-        if (ownerY == -1) return null;
+        if (ownerY == -1)
+            return null;
 
         for (int y = 0; y < board.getBoardHeight(); y++) {
             for (int x = 0; x < board.getBoardWidth(); x++) {
                 BoardPiece p = board.getCharacterPiece(y, x);
-                if (p instanceof Character) {
+                if (p instanceof Player) {
                     int dist = Math.abs(ownerY - y) + Math.abs(ownerX - x);
-                    if (dist <= range) return (Character) p;
+                    if (dist <= range)
+                        return (Player) p;
                 }
             }
         }
@@ -173,7 +183,7 @@ public class Behavior {
         return this.currentState;
     }
 
-    public Character getTarget() {
+    public Player getTarget() {
         return this.target;
     }
 }

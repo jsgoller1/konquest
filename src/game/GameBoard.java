@@ -2,6 +2,8 @@ package game;
 
 import logging.Logger;
 import java.util.Random;
+import game.character.Enemy;
+import game.character.Player;
 import game.terrain.Grass;
 import game.terrain.Mountain;
 import game.terrain.TallGrass;
@@ -136,7 +138,7 @@ public class GameBoard {
             if (terrainContainer.canBeOccupied()) {
                 this.playerY = row;
                 this.playerX = col;
-                characterPieces[row][col] = new Character("Knight", 10, 10, 10);
+                characterPieces[row][col] = new Player(10, 10, 10);
                 placingPlayer = false;
             }
         }
@@ -147,7 +149,7 @@ public class GameBoard {
                 int pick = rand.nextInt(100);
                 if (this.terrainContainers[y][x].canBeOccupied()
                         && this.characterPieces[y][x] == null && pick < 2) {
-                    characterPieces[y][x] = new Enemy("Enemy", 10, 10, 10);
+                    characterPieces[y][x] = new Enemy(10, 10, 10);
                 }
             }
         }
