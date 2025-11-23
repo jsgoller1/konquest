@@ -18,7 +18,7 @@ endif
 
 .PHONY: clean run build
 
-all: build run
+all: build run-debug
 
 # Ensure bin directory exists
 $(BIN_DIR):
@@ -28,8 +28,11 @@ $(BIN_DIR):
 build: $(BIN_DIR)
 	$(JAVAC) -cp $(SRC_DIR) -d $(BIN_DIR) $(SOURCES)
 
-run: build
-	$(JAVA) -cp $(BIN_DIR) Main
+run-debug: build
+	$(JAVA) -cp $(BIN_DIR) Main --log-level debug
+
+run-prod: build
+	$(JAVA) -cp $(BIN_DIR) Main 
 
 clean:
 	reset
