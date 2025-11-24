@@ -42,19 +42,19 @@ public class Player extends Actor {
     public void onTurn() {
         if (keyListener.upArrowPressed()) {
             Logger.debug("Moving player up.");
-            board.movePlayer(-1, 0);
+            board.moveActor(this, -1, 0);
             // this.lastUpdateTimeMs = time;
         } else if (keyListener.downArrowPressed()) {
             Logger.debug("Moving player down.");
-            board.movePlayer(1, 0);
+            board.moveActor(this, 1, 0);
             // this.lastUpdateTimeMs = time;
         } else if (keyListener.leftArrowPressed()) {
             Logger.debug("Moving player left.");
-            board.movePlayer(0, -1);
+            board.moveActor(this, 0, -1);
             // this.lastUpdateTimeMs = time;
         } else if (keyListener.rightArrowPressed()) {
             Logger.debug("Moving player right.");
-            board.movePlayer(0, 1);
+            board.moveActor(this, 0, 1);
             // this.lastUpdateTimeMs = time;
         } else if (keyListener.spacePressed()) {
             // TODO: attack

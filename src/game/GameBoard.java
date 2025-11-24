@@ -19,7 +19,7 @@ import input.GameKeyListener;
 public class GameBoard {
     private GameKeyListener keyListener;
     private TerrainContainer terrainContainers[][];
-    private Actor actorPieces[][];
+    private Actor actors[][];
 
     private TurnManager turnManager;
 
@@ -31,7 +31,6 @@ public class GameBoard {
     private int width;
 
     private HashMap<Actor, Position> positionCache;
-    private Actor player;
     private int playerCount;
     private int enemyCount;
 
@@ -47,7 +46,7 @@ public class GameBoard {
         this.width = width;
         this.keyListener = keyListener;
         this.terrainContainers = new TerrainContainer[height][width];
-        this.actorPieces = new Actor[height][width];
+        this.actors = new Actor[height][width];
         this.positionCache = new HashMap<Actor, Position>();
         this.turnManager = new TurnManager();
         initializeTerrain();
@@ -70,13 +69,6 @@ public class GameBoard {
         this.turnManager.takeTurn();
     }
 
-    public boolean movePlayer(int dy, int dx) {
-        if (this.moveActor(this.player, dy, dx)) {
-            return true;
-        }
-        return false;
-    }
-
     public Position getActorPosition(Actor actor) {
         return this.positionCache.get(actor);
     }
@@ -85,8 +77,16 @@ public class GameBoard {
         /*
          * This is a generic method for moving any actors - player, orcs, etc.
          */
+        if (actor == null) {
+            Logger.warn("Attempting to move a null actor; skipping.");
+            return false;
+        }
+
+        Logger.info(String.format("Moving: %s", actor.getName()));
         Position position = this.positionCache.get(actor);
-        assert this.actorPieces[position.y][position.x] == actor;
+        System.out.println(this.positionCache.size());
+        assert position != null;
+        assert this.actors[position.y][position.x] == actor;
 
         int ny = position.y + dy;
         int nx = position.x + dx;
@@ -95,8 +95,8 @@ public class GameBoard {
                     position.x, ny, nx));
             return false;
         }
-        this.actorPieces[position.y][position.x] = null;
-        this.actorPieces[ny][nx] = actor;
+        this.actors[position.y][position.x] = null;
+        this.actors[ny][nx] = actor;
         this.positionCache.put(actor, new Position(ny, nx));
         return true;
     }
@@ -124,41 +124,34 @@ public class GameBoard {
     }
 
     private void initializeActors() {
-        // Randomly add board pieces; this is just a proof of concept to ensure
-        /// texture loading works correctly and will be scrapped
-        Logger.info("Initializing actors...");
-
+        Logger.info("Initializing actors.");
         Random rand = new Random();
 
-        // Place player
-        boolean placingPlayer = true;
-        while (placingPlayer) {
-            int y = rand.nextInt(this.height);
-            int x = rand.nextInt(this.width);
-            if (this.canBeOccupied(y, x)) {
-                this.player = new Player(this, 10, 10, 10, this.keyListener);
-                this.actorPieces[y][x] = player;
-                this.positionCache.put(player, new Position(y, x));
-                this.turnManager.register(player);
-                placingPlayer = false;
-            }
-        }
-        this.playerCount++;
-
-        // Place enemies
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
                 int pick = rand.nextInt(100);
                 if (this.canBeOccupied(y, x) && pick < 2) {
-                    Enemy enemy = new Enemy(this, 10, 10, 10);
-                    enemy.setName(String.format("%s-%d", enemy.getName(), ++this.enemyCount));
-                    this.actorPieces[y][x] = enemy;
-                    this.positionCache.put(enemy, new Position(y, x));
-                    this.turnManager.register(enemy);
+                    // Place enemies on the top half of the board
+                    if (y > this.height / 2) {
+                        Enemy enemy = new Enemy(this, 10, 10, 10);
+                        enemy.setName(String.format("%s-%d", enemy.getName(), ++this.enemyCount));
+                        actors[y][x] = enemy;
+                        this.positionCache.put(enemy, new Position(y, x));
+                        this.turnManager.register(enemy);
+                    } else {
+                        // Place players on the bottom half
+                        Player player = new Player(this, 10, 10, 10, this.keyListener);
+                        player.setName(
+                                String.format("%s-%d", player.getName(), ++this.playerCount));
+                        actors[y][x] = player;
+                        this.positionCache.put(player, new Position(y, x));
+                        this.turnManager.register(player);
+                        Logger.info(String.format("Created %s", player.getName()));
+                    }
                 }
             }
         }
-        Logger.info("Initialized actors.");
+        Logger.info("Initialized characters.");
     }
 
     public boolean validCell(int y, int x) {
@@ -174,11 +167,11 @@ public class GameBoard {
          * cell
          */
         return this.validCell(y, x) && this.terrainContainers[y][x].canBeOccupied()
-                && this.actorPieces[y][x] == null;
+                && this.actors[y][x] == null;
     }
 
     public boolean cellEmpty(int y, int x) {
-        return validCell(y, x) && (actorPieces[y][x] == null)
+        return validCell(y, x) && (actors[y][x] == null)
                 && (this.terrainContainers[y][x].canBeOccupied());
     }
 
@@ -195,7 +188,7 @@ public class GameBoard {
             Logger.error(String.format("Cannot get actor at (%d, %d)", x, y));
             return null;
         }
-        return this.actorPieces[y][x];
+        return this.actors[y][x];
     }
 
     public boolean removeActor(int y, int x) {
@@ -203,9 +196,9 @@ public class GameBoard {
             Logger.error(String.format("Cannot remove actor at (%d, %d)", x, y));
             return false;
         }
-        Actor actor = this.actorPieces[y][x];
+        Actor actor = this.actors[y][x];
         this.positionCache.remove(actor);
-        this.actorPieces[y][x] = null;
+        this.actors[y][x] = null;
         return true;
     }
 
