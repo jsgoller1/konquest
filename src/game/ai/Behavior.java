@@ -218,6 +218,10 @@ public class Behavior {
             Logger.info(String.format("(%d, %d)", pos.y, pos.x));
         }
         this.stepPath();
+        if (this.path.isEmpty()) {
+            this.owner.setHasAttacked(true);
+            this.owner.setMovesRemaining(0);
+        }
     }
 
     private void executeDead() {

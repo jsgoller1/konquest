@@ -52,4 +52,21 @@ public class Enemy extends Actor {
                 return true;
         }
     }
+
+    public String getState() {
+        switch (this.fsm.getCurrentState()) {
+            case EnemyState.DEAD:
+                return "DEAD";
+            case EnemyState.CHASING:
+                return "CHASING";
+            case EnemyState.SEARCHING:
+                return "SEARCHING";
+            case EnemyState.FLEEING:
+                return "FLEEING";
+            case EnemyState.FIGHTING:
+                return "FIGHTING";
+            default:
+                return "";
+        }
+    }
 }

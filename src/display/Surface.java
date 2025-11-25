@@ -115,8 +115,8 @@ public class Surface extends JPanel {
         g2d.drawString("----------------------------", 700, y);
         y += 25;
         for (Enemy enemy : enemies) {
-            g2d.drawString(String.format("%s: %d/%d HP", enemy.getName(), enemy.getHealth(),
-                    enemy.getMaxHealth()), 700, y);
+            g2d.drawString(String.format("%s: %d/%d HP | %s", enemy.getName(), enemy.getHealth(),
+                    enemy.getMaxHealth(), enemy.getState()), 700, y);
             y += 30;
         }
 
