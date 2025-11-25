@@ -14,18 +14,24 @@ abstract public class Actor extends BoardPiece {
     protected int speed;
     protected int movesRemaining;
     protected boolean hasAttacked;
+    protected int id;
 
-    protected Actor(String spriteSheetPath, GameBoard board, String name, int health, int attack,
-            int speed) {
+    protected Actor(String spriteSheetPath, GameBoard board, int id, String name, int health,
+            int attack, int speed) {
         super(spriteSheetPath);
+        this.id = id;
         this.board = board;
-        this.name = name;
+        this.name = String.format("%s-%d", name, id);
         this.maxHealth = health;
         this.health = health;
         this.attack = attack;
         this.speed = speed;
         this.movesRemaining = speed;
         this.hasAttacked = false;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     public String getName() {

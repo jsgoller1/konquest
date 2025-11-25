@@ -25,8 +25,9 @@ public class Player extends Actor {
         this.spriteComponent.loadSprite(0, 1);
     }
 
-    public Player(GameBoard board, GameKeyListener keyListener) {
-        super(PLAYER_SPRITE_SHEET_PATH, board, "Player", HEALTH_POINTS, ATTACK_POWER, SPEED_RATING);
+    public Player(GameBoard board, int id, GameKeyListener keyListener) {
+        super(PLAYER_SPRITE_SHEET_PATH, board, id, "Player", HEALTH_POINTS, ATTACK_POWER,
+                SPEED_RATING);
         this.keyListener = keyListener;
         this.initializeSprites();
     }

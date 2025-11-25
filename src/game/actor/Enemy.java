@@ -23,8 +23,9 @@ public class Enemy extends Actor {
         this.spriteComponent.loadSprite(0, 1);
     }
 
-    public Enemy(GameBoard board) {
-        super(ENEMY_SPRITE_SHEET_PATH, board, "Enemy", HEALTH_POINTS, ATTACK_POWER, SPEED_RATING);
+    public Enemy(GameBoard board, int id) {
+        super(ENEMY_SPRITE_SHEET_PATH, board, id, "Enemy", HEALTH_POINTS, ATTACK_POWER,
+                SPEED_RATING);
         this.target = null;
         this.fsm = new Behavior(this.board, this);
 

@@ -3,6 +3,7 @@ package game;
 import logging.Logger;
 import java.io.Console;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Random;
 import game.actor.Actor;
@@ -155,12 +156,11 @@ public class GameBoard {
         if (!this.canBeOccupied(y, x)) {
             return false;
         }
-        Player player = new Player(this, this.keyListener);
+        Player player = new Player(this, this.playerCount++, this.keyListener);
         player.setName(String.format("Soldier %d", id));
         actors[y][x] = player;
         this.positionCache.put(player, new Position(y, x));
         this.turnManager.register(player);
-        ++this.playerCount;
         Logger.info(String.format("Created %s", player.getName()));
         return true;
     }
@@ -169,12 +169,11 @@ public class GameBoard {
         if (!this.canBeOccupied(y, x)) {
             return false;
         }
-        Enemy enemy = new Enemy(this);
+        Enemy enemy = new Enemy(this, this.enemyCount++);
         enemy.setName(String.format("Orc %d", id));
         actors[y][x] = enemy;
         this.positionCache.put(enemy, new Position(y, x));
         this.turnManager.register(enemy);
-        ++this.enemyCount;
         Logger.info(String.format("Created %s", enemy.getName()));
         return true;
     }
@@ -372,6 +371,7 @@ public class GameBoard {
                 }
             }
         }
+        players.sort(Comparator.comparingInt(Actor::getId));
         return players;
     }
 
@@ -385,8 +385,8 @@ public class GameBoard {
                 }
             }
         }
+        enemies.sort(Comparator.comparingInt(Actor::getId));
         return enemies;
-
     }
 
     public int getBoardHeight() {
