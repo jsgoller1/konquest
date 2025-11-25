@@ -1,12 +1,12 @@
-package game.character;
+package game.actor;
 
 import java.util.List;
 import sprites.Sprite;
 import game.ai.Behavior;
-import game.character.Character;
 import game.GameBoard;
+import game.actor.Actor;
 
-public class Enemy extends Character {
+public class Enemy extends Actor {
     private Player target;
     private Behavior fsm;
 

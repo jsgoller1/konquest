@@ -2,8 +2,8 @@ package game.ai;
 
 import java.util.List;
 import game.GameBoard;
-import game.character.Enemy;
-import game.character.Player;
+import game.actor.Enemy;
+import game.actor.Player;
 import game.BoardPiece;
 import java.util.Random;
 

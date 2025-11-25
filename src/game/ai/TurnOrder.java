@@ -1,24 +1,24 @@
 package game.ai;
 
 import java.util.ArrayDeque;
-import game.character.Character;
+import game.actor.Actor;
 
 public class TurnOrder {
-    private ArrayDeque<Character> queue;
+    private ArrayDeque<Actor> queue;
 
     public TurnOrder() {
-        this.queue = new ArrayDeque<Character>();
+        this.queue = new ArrayDeque<Actor>();
     }
 
-    public void addUnit(Character piece) {
+    public void addUnit(Actor piece) {
         this.queue.add(piece);
     }
 
-    public void removeUnit(Character piece) {
+    public void removeUnit(Actor piece) {
         this.queue.remove(piece);
     }
 
-    public Character peek() {
+    public Actor peek() {
         return this.queue.peek();
     }
 

@@ -1,16 +1,16 @@
-package game.character;
+package game.actor;
 
 import logging.Logger;
 import game.GameBoard;
-import game.character.Character;
+import game.actor.Actor;
 import sprites.Sprite;
 import input.GameKeyListener;
 
 
-public class Player extends Character {
+public class Player extends Actor {
     private GameKeyListener keyListener;
 
-    static final String CHARACTER_SPRITE_SHEET_PATH =
+    static final String PLAYER_SPRITE_SHEET_PATH =
             "assets/Characters/Soldiers/Melee/RedMelee/SwordsmanRed.png";
 
     @Override
@@ -21,7 +21,7 @@ public class Player extends Character {
     }
 
     public Player(GameBoard board, int health, int attack, int speed, GameKeyListener keyListener) {
-        super(CHARACTER_SPRITE_SHEET_PATH, board, "Player", health, attack, speed);
+        super(PLAYER_SPRITE_SHEET_PATH, board, "Player", health, attack, speed);
         this.keyListener = keyListener;
         this.initializeSprites();
     }

@@ -3,10 +3,10 @@ import javax.swing.SwingUtilities;
 import logging.Logger;
 import display.Window;
 import game.GameBoard;
-import game.character.Enemy;
 import game.pathfinding.*;
 import java.util.*;
 import game.MusicPlayer;
+import game.actor.Enemy;
 
 class Main {
     private static Window window;

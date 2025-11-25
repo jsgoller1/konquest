@@ -1,18 +1,18 @@
-package game.character;
+package game.actor;
 
 import game.BoardPiece;
 import game.GameBoard;
 import sprites.SpriteComponent;
 
-abstract public class Character extends BoardPiece {
+abstract public class Actor extends BoardPiece {
     protected String name;
     protected GameBoard board;
     protected int health;
     protected int attack;
     protected int speed;
 
-    protected Character(String spriteSheetPath, GameBoard board, String name, int health,
-            int attack, int speed) {
+    protected Actor(String spriteSheetPath, GameBoard board, String name, int health, int attack,
+            int speed) {
         super(spriteSheetPath);
         this.board = board;
         this.name = name;
