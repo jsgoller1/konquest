@@ -28,7 +28,6 @@ public class Move {
 
     public ArrayList<Position> pathfind() {
         ArrayList<Position> path = this.dijkstraSearch();
-        path.remove(0);
         return path;
     }
 

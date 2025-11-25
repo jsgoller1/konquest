@@ -91,8 +91,8 @@ public class GameBoard {
         assert this.actors[current.y][current.x] == actor;
 
         if (!(this.canBeOccupied(newPosition.y, newPosition.x))) {
-            Logger.debug(String.format("Not moving actor from (%d, %d) to (%d, %d)", current.y,
-                    current.x, newPosition.y, newPosition.x));
+            Logger.debug(String.format("Not moving actor %s from (%d, %d) to (%d, %d)",
+                    actor.getName(), current.y, current.x, newPosition.y, newPosition.x));
             return false;
         }
         this.actors[current.y][current.x] = null;

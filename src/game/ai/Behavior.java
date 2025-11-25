@@ -150,6 +150,19 @@ public class Behavior {
             return;
         }
 
+        Position pos = this.board.getActorPosition(this.owner);
+        Logger.debug(String.format("Stepping actor %s from (%d, %d) to (%d, %d)",
+                this.owner.getName(), path.getFirst().y, path.getFirst().x, pos.y, pos.x));
+
+        // If the path begins with the current position, just remove it
+        if (this.path.getFirst().equals(this.board.getActorPosition(this.owner))) {
+            Logger.info("First path step is current position; skipping.");
+            this.path.remove(0);
+            if (this.path.size() == 0) {
+                return;
+            }
+        }
+
         this.board.moveActorTo(this.owner, this.path.getFirst());
         this.owner.setMovesRemaining(this.owner.getMovesRemaining() - 1);
         this.path.remove(0);
@@ -162,6 +175,10 @@ public class Behavior {
             this.path = new Move(this.board, this.board.getActorPosition(this.owner),
                     this.board.getPlayerZoneTile()).pathfind();
         }
+        Logger.info(String.format("Search path for %s:", this.owner.getName()));
+        for (Position pos : this.path) {
+            Logger.info(String.format("(%d, %d)", pos.y, pos.x));
+        }
         this.stepPath();
     }
 
@@ -169,7 +186,7 @@ public class Behavior {
         // move towards target (nearest character)
         this.path = new Move(this.board, this.board.getActorPosition(this.owner),
                 this.board.getActorPosition(this.target)).pathfind();
-        Logger.info("Chase path:");
+        Logger.info(String.format("Chase path for %s:", this.owner.getName()));
         for (Position pos : this.path) {
             Logger.info(String.format("(%d, %d)", pos.y, pos.x));
         }
@@ -187,11 +204,11 @@ public class Behavior {
     }
 
     private void executeFleeing() {
-        if (path == null) {
+        if (path == null || path.size() == 0) {
             this.path = new Move(this.board, this.board.getActorPosition(this.owner),
                     this.board.getNearestCorner(this.owner)).pathfind();
         }
-        Logger.info("Flee path:");
+        Logger.info(String.format("Flee path for %s:", this.owner.getName()));
         for (Position pos : this.path) {
             Logger.info(String.format("(%d, %d)", pos.y, pos.x));
         }
