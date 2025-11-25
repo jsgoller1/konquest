@@ -17,16 +17,16 @@ public class Logger {
                 currentLevel = Level.DEBUG;
                 break;
             case "INFO":
-                currentLevel = Level.DEBUG;
+                currentLevel = Level.INFO;
                 break;
             case "WARN":
-                currentLevel = Level.DEBUG;
+                currentLevel = Level.WARN;
                 break;
             case "ERROR":
-                currentLevel = Level.DEBUG;
+                currentLevel = Level.ERROR;
                 break;
             case "SILENCED":
-                currentLevel = Level.DEBUG;
+                currentLevel = Level.SILENCED;
                 break;
             default:
                 error(String.format("Cannot set level to %d", level));

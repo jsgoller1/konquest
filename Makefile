@@ -32,7 +32,7 @@ run-debug: build
 	$(JAVA) -ea -cp $(BIN_DIR) Main --log-level debug --mute-sound
 
 run-prod: build
-	$(JAVA) -cp $(BIN_DIR) Main --log-level debug
+	$(JAVA) -cp $(BIN_DIR) Main --log-level info
 
 clean:
 	reset
