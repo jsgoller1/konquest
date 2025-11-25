@@ -191,6 +191,11 @@ public class Behavior {
             Logger.info(String.format("(%d, %d)", pos.y, pos.x));
         }
         this.stepPath();
+        // TODO: Shitty bug fix for now; force turn end if orc is stuck
+        if (this.path.isEmpty()) {
+            this.owner.setHasAttacked(true);
+            this.owner.setMovesRemaining(0);
+        }
     }
 
     private void executeFighting() {

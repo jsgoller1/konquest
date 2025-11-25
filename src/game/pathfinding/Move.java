@@ -81,7 +81,6 @@ public class Move {
                 }
             }
         }
-
         return new ArrayList<>();
     }
 
