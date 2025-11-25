@@ -1,6 +1,7 @@
 package game.ai;
 
 import game.actor.Actor;
+import game.Position;
 import logging.Logger;
 
 public class TurnManager {
@@ -8,6 +9,10 @@ public class TurnManager {
 
     public TurnManager() {
         this.turnOrder = new TurnOrder();
+    }
+
+    public Actor getCurrentTurnActor() {
+        return this.turnOrder.peek();
     }
 
     public void register(Actor actor) {
@@ -23,7 +28,7 @@ public class TurnManager {
 
     public void takeTurn() {
         // TODO: This doesn't actually cycle the turn order, just confirms logic works for now.
-        Actor current = turnOrder.peek();
+        Actor current = this.turnOrder.peek();
         if (current == null) {
             Logger.warn("TurnManager: Null actor attempting to take turn. Skipping.");
         }

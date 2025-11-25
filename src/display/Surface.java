@@ -107,6 +107,9 @@ public class Surface extends JPanel {
             Logger.warn("Board is null; skipping drawing.");
             return;
         }
+
+        Position cursorPostion = board.getCursorPosition();
+
         for (int row = 0; row < board.getBoardHeight(); row++) {
             for (int col = 0; col < board.getBoardWidth(); col++) {
                 TerrainContainer container = board.getTerrainContainer(row, col);
@@ -114,6 +117,10 @@ public class Surface extends JPanel {
 
                 for (Terrain piece : container.getBackgroundPieces()) {
                     drawPiece(g2d, piece, row, col, this.currUpdateTime);
+                }
+
+                if (cursorPostion.y == row && cursorPostion.x == col) {
+                    drawPiece(g2d, board.getCursor(), row, col, this.currUpdateTime);
                 }
 
                 drawPiece(g2d, actor, row, col, this.currUpdateTime);

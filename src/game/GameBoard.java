@@ -20,6 +20,7 @@ public class GameBoard {
     private GameKeyListener keyListener;
     private TerrainContainer terrainContainers[][];
     private Actor actors[][];
+    private Cursor cursor;
 
     private TurnManager turnManager;
 
@@ -48,6 +49,8 @@ public class GameBoard {
         this.actors = new Actor[height][width];
         this.positionCache = new HashMap<Actor, Position>();
         this.turnManager = new TurnManager();
+        this.cursor = new Cursor();
+
         initializeTerrain();
         initializeActors();
         Logger.info("Board created.");
@@ -63,9 +66,16 @@ public class GameBoard {
             Logger.debug("Escape pressed - quitting!");
             this.quitNow = true;
         }
-
         this.lastUpdateTimeMs = time;
         this.turnManager.takeTurn();
+    }
+
+    public Cursor getCursor() {
+        return this.cursor;
+    }
+
+    public Position getCursorPosition() {
+        return this.positionCache.get(this.turnManager.getCurrentTurnActor());
     }
 
     public Position getActorPosition(Actor actor) {
