@@ -2,7 +2,9 @@ package game;
 
 import logging.Logger;
 import java.io.Console;
+import java.util.HashMap;
 import java.util.Random;
+import game.actor.Actor;
 import game.actor.Enemy;
 import game.actor.Player;
 import game.ai.TurnManager;
@@ -17,7 +19,8 @@ import input.GameKeyListener;
 public class GameBoard {
     private GameKeyListener keyListener;
     private TerrainContainer terrainContainers[][];
-    private BoardPiece characterPieces[][];
+    private Actor actorPieces[][];
+
     private TurnManager turnManager;
 
     private long lastUpdateTimeMs;
@@ -27,11 +30,9 @@ public class GameBoard {
     private int height;
     private int width;
 
-    // TODO: hate this, need one source of truth on positions
-    private Player player;
+    private HashMap<Actor, Position> positionCache;
+    private Actor player;
     private int playerCount;
-    private int playerY;
-    private int playerX;
     private int enemyCount;
 
     public GameBoard(int height, int width, GameKeyListener keyListener) {
@@ -46,10 +47,11 @@ public class GameBoard {
         this.width = width;
         this.keyListener = keyListener;
         this.terrainContainers = new TerrainContainer[height][width];
-        this.characterPieces = new BoardPiece[height][width];
+        this.actorPieces = new Actor[height][width];
+        this.positionCache = new HashMap<Actor, Position>();
         this.turnManager = new TurnManager();
         initializeTerrain();
-        initializeCharacters();
+        initializeActors();
         Logger.info("Board created.");
     }
 
@@ -69,30 +71,33 @@ public class GameBoard {
     }
 
     public boolean movePlayer(int dy, int dx) {
-        if (this.moveCharacter(this.playerY, this.playerX, dy, dx)) {
-            this.playerX += dx;
-            this.playerY += dy;
+        if (this.moveActor(this.player, dy, dx)) {
             return true;
         }
         return false;
     }
 
-    public boolean moveCharacter(int y, int x, int dy, int dx) {
+    public Position getActorPosition(Actor actor) {
+        return this.positionCache.get(actor);
+    }
+
+    public boolean moveActor(Actor actor, int dy, int dx) {
         /*
-         * This is a generic method for moving any characters - player, orcs, etc.
+         * This is a generic method for moving any actors - player, orcs, etc.
          */
-        int ny = y + dy;
-        int nx = x + dx;
-        if (!(this.validCell(y, x) && this.validCell(ny, nx)
-                && this.terrainContainers[ny][nx].canBeOccupied()
-                && this.characterPieces[y][x] != null && this.characterPieces[ny][nx] == null)) {
-            Logger.debug(
-                    String.format("Not moving character from (%d, %d) to (%d, %d)", y, x, ny, nx));
+        Position position = this.positionCache.get(actor);
+        assert this.actorPieces[position.y][position.x] == actor;
+
+        int ny = position.y + dy;
+        int nx = position.x + dx;
+        if (!(this.canBeOccupied(ny, nx))) {
+            Logger.debug(String.format("Not moving actor from (%d, %d) to (%d, %d)", position.y,
+                    position.x, ny, nx));
             return false;
         }
-        BoardPiece piece = characterPieces[y][x];
-        characterPieces[y][x] = null;
-        characterPieces[y + dy][x + dx] = piece;
+        this.actorPieces[position.y][position.x] = null;
+        this.actorPieces[ny][nx] = actor;
+        this.positionCache.put(actor, new Position(ny, nx));
         return true;
     }
 
@@ -118,24 +123,22 @@ public class GameBoard {
         Logger.info("Initialized terrain.");
     }
 
-    private void initializeCharacters() {
+    private void initializeActors() {
         // Randomly add board pieces; this is just a proof of concept to ensure
         /// texture loading works correctly and will be scrapped
-        Logger.info("Initializing characters...");
+        Logger.info("Initializing actors...");
 
         Random rand = new Random();
 
         // Place player
         boolean placingPlayer = true;
         while (placingPlayer) {
-            int row = rand.nextInt(this.height);
-            int col = rand.nextInt(this.width);
-            TerrainContainer terrainContainer = this.terrainContainers[row][col];
-            if (terrainContainer.canBeOccupied()) {
-                this.playerY = row;
-                this.playerX = col;
+            int y = rand.nextInt(this.height);
+            int x = rand.nextInt(this.width);
+            if (this.canBeOccupied(y, x)) {
                 this.player = new Player(this, 10, 10, 10, this.keyListener);
-                characterPieces[row][col] = player;
+                this.actorPieces[y][x] = player;
+                this.positionCache.put(player, new Position(y, x));
                 this.turnManager.register(player);
                 placingPlayer = false;
             }
@@ -146,69 +149,72 @@ public class GameBoard {
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
                 int pick = rand.nextInt(100);
-                if (this.terrainContainers[y][x].canBeOccupied()
-                        && this.characterPieces[y][x] == null && pick < 2) {
+                if (this.canBeOccupied(y, x) && pick < 2) {
                     Enemy enemy = new Enemy(this, 10, 10, 10);
                     enemy.setName(String.format("%s-%d", enemy.getName(), ++this.enemyCount));
-                    characterPieces[y][x] = enemy;
+                    this.actorPieces[y][x] = enemy;
+                    this.positionCache.put(enemy, new Position(y, x));
                     this.turnManager.register(enemy);
-
                 }
             }
         }
-        Logger.info("Initialized characters.");
+        Logger.info("Initialized actors.");
     }
 
     public boolean validCell(int y, int x) {
+        // Simple check against whether the y and x value even exist on the board; do not use
+        // for putting board pieces on the board
         return (0 <= y && y < this.getBoardHeight() && 0 <= x && x < this.getBoardWidth());
     }
 
+    public boolean canBeOccupied(int y, int x) {
+        /*
+         * Checks if a actor can occupy a cell. Reasons it can't: Cell is invalid / outside board,
+         * cell contains terrain that can't be occupied (mountain), another actor is already in the
+         * cell
+         */
+        return this.validCell(y, x) && this.terrainContainers[y][x].canBeOccupied()
+                && this.actorPieces[y][x] == null;
+    }
+
     public boolean cellEmpty(int y, int x) {
-        return validCell(y, x) && (characterPieces[y][x] == null)
+        return validCell(y, x) && (actorPieces[y][x] == null)
                 && (this.terrainContainers[y][x].canBeOccupied());
     }
 
     public TerrainContainer getTerrainContainer(int y, int x) {
         if (!validCell(y, x)) {
-            Logger.error(String.format("Cannot get character at (%d, %d)", x, y));
+            Logger.error(String.format("Cannot get actor at (%d, %d)", x, y));
             return null;
         }
         return this.terrainContainers[y][x];
     }
 
-    public BoardPiece getCharacterPiece(int y, int x) {
+    public Actor getActor(int y, int x) {
         if (!validCell(y, x)) {
-            Logger.error(String.format("Cannot get character piece at (%d, %d)", x, y));
+            Logger.error(String.format("Cannot get actor at (%d, %d)", x, y));
             return null;
         }
-        return this.characterPieces[y][x];
+        return this.actorPieces[y][x];
     }
 
-    // removes piece // added by Jonathan
-    public void removeCharacterPiece(int y, int x) {
-        if (!validCell(y, x)) {
-            Logger.error(String.format("Cannot remove character piece at (%d, %d)", x, y));
-            return;
-        }
-        this.characterPieces[y][x] = null;
-    }
-
-    /**
-     * Remove the given piece from the board by reference. Returns true if the piece was found and
-     * removed, false otherwise.
-     */
-    public boolean removeCharacterPiece(BoardPiece piece) {
-        if (piece == null)
+    public boolean removeActor(int y, int x) {
+        if (!this.cellEmpty(y, x)) {
+            Logger.error(String.format("Cannot remove actor at (%d, %d)", x, y));
             return false;
-        for (int y = 0; y < this.getBoardHeight(); y++) {
-            for (int x = 0; x < this.getBoardWidth(); x++) {
-                if (this.characterPieces[y][x] == piece) {
-                    this.characterPieces[y][x] = null;
-                    return true;
-                }
-            }
         }
-        return false;
+        Actor actor = this.actorPieces[y][x];
+        this.positionCache.remove(actor);
+        this.actorPieces[y][x] = null;
+        return true;
+    }
+
+    public boolean removeActor(Actor actor) {
+        Position position = this.positionCache.get(actor);
+        if (position == null) {
+            return false;
+        }
+        return this.removeActor(position.y, position.x);
     }
 
     public int getBoardHeight() {

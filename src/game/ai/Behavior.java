@@ -4,7 +4,7 @@ import java.util.List;
 import game.GameBoard;
 import game.actor.Enemy;
 import game.actor.Player;
-import game.BoardPiece;
+import game.actor.Actor;
 import java.util.Random;
 
 public class Behavior {
@@ -107,7 +107,7 @@ public class Behavior {
     // be so long, but I don't know how to make the fail case cleaner
     private void executeDead(GameBoard board) {
         // remove by reference — GameBoard will search and clear the piece
-        board.removeCharacterPiece(owner);
+        board.removeActor(owner);
     }
 
     // Find any adjacent player characters on map // May not be needed as Grant is doing
@@ -117,7 +117,7 @@ public class Behavior {
         int ownerX = -1;
         for (int y = 0; y < board.getBoardHeight(); y++) {
             for (int x = 0; x < board.getBoardWidth(); x++) {
-                if (board.getCharacterPiece(y, x) == owner) {
+                if (board.getActor(y, x) == owner) {
                     ownerY = y;
                     ownerX = x;
                     break;
@@ -136,7 +136,7 @@ public class Behavior {
             int ny = n[0], nx = n[1];
             if (!board.validCell(ny, nx))
                 continue;
-            BoardPiece p = board.getCharacterPiece(ny, nx);
+            Actor p = board.getActor(ny, nx);
             if (p instanceof Player) {
                 return (Player) p;
             }
@@ -151,7 +151,7 @@ public class Behavior {
         int ownerX = -1;
         for (int y = 0; y < board.getBoardHeight(); y++) {
             for (int x = 0; x < board.getBoardWidth(); x++) {
-                if (board.getCharacterPiece(y, x) == owner) {
+                if (board.getActor(y, x) == owner) {
                     ownerY = y;
                     ownerX = x;
                     break;
@@ -166,7 +166,7 @@ public class Behavior {
 
         for (int y = 0; y < board.getBoardHeight(); y++) {
             for (int x = 0; x < board.getBoardWidth(); x++) {
-                BoardPiece p = board.getCharacterPiece(y, x);
+                Actor p = board.getActor(y, x);
                 if (p instanceof Player) {
                     int dist = Math.abs(ownerY - y) + Math.abs(ownerX - x);
                     if (dist <= range)
