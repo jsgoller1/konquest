@@ -288,8 +288,8 @@ public class GameBoard {
     public boolean atEdge(Actor actor) {
         // Returns true if an actor is at the edge of the board; useful for fleeing behavior.
         Position position = this.positionCache.get(actor);
-        return position.x == 0 || position.y == 0 || position.x == this.width
-                || position.y == this.height;
+        return position.x == 0 || position.y == 0 || position.x == this.width - 1
+                || position.y == this.height - 1;
     }
 
     public Player getNearestPlayer(Enemy source, int distanceLimit) {
