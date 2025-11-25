@@ -41,6 +41,7 @@ class Main {
             window.update(time);
             GAME_RUNNING = !window.isGameComplete();
         }
+        Logger.info("Game over!");
         if (!muteSound) {
             musicPlayer.stopTrack();
         }

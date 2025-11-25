@@ -157,10 +157,9 @@ public class Behavior {
     private void executeSearching() {
         Logger.debug(String.format("%s: searching.", owner.getName()));
         // If we're searching, we need to pick a target and move that way.
-        // this.board.getPlayerZoneTile();
-        if (this.path == null) {
+        if (this.path == null || this.path.size() == 0) {
             this.path = new Move(this.board, this.board.getActorPosition(this.owner),
-                    new Position(0, 0)).pathfind();
+                    this.board.getPlayerZoneTile()).pathfind();
         }
         this.stepPath();
     }
@@ -177,8 +176,11 @@ public class Behavior {
 
     private void executeFighting() {
         if (target != null) {
-            int damage = owner.getAttack();
-            target.damage(damage);
+            int damage = this.owner.getAttack();
+            Logger.info(
+                    String.format("%s damages %s!", this.owner.getName(), this.target.getName()));
+            this.target.damage(damage);
+            this.owner.setHasAttacked(true);
         }
     }
 

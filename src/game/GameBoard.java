@@ -144,7 +144,8 @@ public class GameBoard {
 
     private void setupTestActors() {
         this.createPlayer(0, 2, 5);
-        this.createEnemy(0, 15, 5);
+        this.createPlayer(0, 2, 19);
+        this.createEnemy(0, 3, 5);
     }
 
 
@@ -152,7 +153,7 @@ public class GameBoard {
         if (!this.canBeOccupied(y, x)) {
             return false;
         }
-        Player player = new Player(this, 10, 10, 4, this.keyListener);
+        Player player = new Player(this, this.keyListener);
         actors[y][x] = player;
         this.positionCache.put(player, new Position(y, x));
         this.turnManager.register(player);
@@ -244,19 +245,26 @@ public class GameBoard {
     }
 
     public boolean removeActor(int y, int x) {
-        if (!this.cellEmpty(y, x)) {
+        if (this.cellEmpty(y, x)) {
             Logger.error(String.format("Cannot remove actor at (%d, %d)", x, y));
             return false;
         }
         Actor actor = this.actors[y][x];
         this.positionCache.remove(actor);
+        this.turnManager.deregister(actor);
         this.actors[y][x] = null;
+        if (actor instanceof Player) {
+            playerCount--;
+        } else {
+            enemyCount--;
+        }
         return true;
     }
 
     public boolean removeActor(Actor actor) {
         Position position = this.positionCache.get(actor);
         if (position == null) {
+            Logger.info("Cannot remove actor " + actor.getName());
             return false;
         }
         return this.removeActor(position.y, position.x);
@@ -298,6 +306,20 @@ public class GameBoard {
             return bestPlayer;
         }
         return null;
+    }
+
+    public Position getPlayerZoneTile() {
+        boolean searching = true;
+        Random rand = new Random();
+        int y = 0, x = 0;
+        while (searching) {
+            x = rand.nextInt(this.getBoardWidth());
+            y = rand.nextInt(this.getBoardHeight() / 2);
+            if (this.canBeOccupied(y, x)) {
+                searching = false;
+            }
+        }
+        return new Position(y, x);
     }
 
     public int getBoardHeight() {

@@ -20,11 +20,18 @@ public class TurnManager {
             Logger.warn("TurnManager: Trying to register null actor, skipping.");
             return;
         }
-        Logger.debug(String.format("TurnManager registered %s", actor.getName()));
         this.turnOrder.addUnit(actor);
+        Logger.debug(String.format("TurnManager registered %s", actor.getName()));
     }
 
-    public void deregister(Actor actor) {}
+    public void deregister(Actor actor) {
+        if (actor == null) {
+            Logger.warn("TurnManager: Trying to deregister null actor, skipping.");
+            return;
+        }
+        this.turnOrder.removeUnit(actor);
+        Logger.debug(String.format("TurnManager deregistered %s", actor.getName()));
+    }
 
     public void takeTurn() {
         // TODO: This doesn't actually cycle the turn order, just confirms logic works for now.

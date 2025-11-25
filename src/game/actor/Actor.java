@@ -2,6 +2,7 @@ package game.actor;
 
 import game.BoardPiece;
 import game.GameBoard;
+import logging.Logger;
 import sprites.SpriteComponent;
 
 abstract public class Actor extends BoardPiece {
@@ -41,8 +42,20 @@ abstract public class Actor extends BoardPiece {
         return this.attack;
     }
 
+    public void move(int dy, int dx) {
+        Logger.debug(String.format("Moving %s: dy=%d, dx=%d", this.name, dy, dx));
+        if (movesRemaining > 0 && board.moveActor(this, dy, dx)) {
+            this.movesRemaining--;
+        }
+    }
+
     public void damage(int damage) {
         this.health -= damage;
+        Logger.info(String.format("%s took %d damage! New HP is %d", this.getName(), damage,
+                this.health));
+        if (this.health <= 0) {
+            this.board.removeActor(this);
+        }
     }
 
     public int getMovesRemaining() {
@@ -51,6 +64,10 @@ abstract public class Actor extends BoardPiece {
 
     public void setMovesRemaining(int newVal) {
         this.movesRemaining = newVal;
+    }
+
+    public void setHasAttacked(boolean newVal) {
+        this.hasAttacked = newVal;
     }
 
     // What should the character do on their turn?

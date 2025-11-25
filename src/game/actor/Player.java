@@ -12,6 +12,9 @@ public class Player extends Actor {
 
     static final String PLAYER_SPRITE_SHEET_PATH =
             "assets/Characters/Soldiers/Melee/RedMelee/SwordsmanRed.png";
+    static final int HEALTH_POINTS = 2;
+    static final int ATTACK_POWER = 2;
+    static final int SPEED_RATING = 4;
 
     @Override
     public void initializeSprites() {
@@ -20,29 +23,10 @@ public class Player extends Actor {
         this.spriteComponent.loadSprite(0, 1);
     }
 
-    public Player(GameBoard board, int health, int attack, int speed, GameKeyListener keyListener) {
-        super(PLAYER_SPRITE_SHEET_PATH, board, "Player", health, attack, speed);
+    public Player(GameBoard board, GameKeyListener keyListener) {
+        super(PLAYER_SPRITE_SHEET_PATH, board, "Player", HEALTH_POINTS, ATTACK_POWER, SPEED_RATING);
         this.keyListener = keyListener;
         this.initializeSprites();
-    }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public int getAttack() {
-        return this.attack;
-    }
-
-    public void damage(int damage) {
-        this.health -= damage;
-    }
-
-    private void move(int dy, int dx) {
-        Logger.debug(String.format("Moving player dy=%d, dx=%d", dy, dx));
-        if (movesRemaining > 0 && board.moveActor(this, dy, dx)) {
-            this.movesRemaining--;
-        }
     }
 
     @Override
