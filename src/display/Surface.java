@@ -91,7 +91,7 @@ public class Surface extends JPanel {
         g2d.setFont(new Font("Bodoni 72 Smallcaps", Font.BOLD, 24));
 
         ArrayList<Player> players = this.board.getPlayers();
-        int y = 100;
+        int y = 35;
         g2d.setColor(Color.BLUE);
         g2d.drawString("Your Forces", 700, y);
         y += 25;
