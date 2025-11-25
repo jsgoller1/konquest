@@ -23,7 +23,7 @@ public class MusicPlayer {
 
     public void start() {
         Random rand = new Random();
-        int pick = rand.nextInt(2);
+        int pick = rand.nextInt(3);
         switch (pick) {
             case 0:
                 playTrack("assets/Music/fgo-between-light-dark.wav", true);
