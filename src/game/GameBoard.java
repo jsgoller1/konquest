@@ -134,6 +134,8 @@ public class GameBoard {
     private void initializeActors() {
         Logger.info("Initializing actors.");
         Random rand = new Random();
+        int playersRemaining = 4;
+        int enemiesRemaining = 4;
 
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
@@ -141,14 +143,21 @@ public class GameBoard {
                 if (this.canBeOccupied(y, x) && pick < 2) {
                     // Place enemies on the top half of the board
                     if (y > this.height / 2) {
+                        if (enemiesRemaining == 0) {
+                            continue;
+                        }
                         // TODO: For now, skip over enemy creation; just want to test player stuff.
                         Enemy enemy = new Enemy(this, 10, 10, 4);
                         enemy.setName(String.format("%s-%d", enemy.getName(), ++this.enemyCount));
                         actors[y][x] = enemy;
                         this.positionCache.put(enemy, new Position(y, x));
                         this.turnManager.register(enemy);
+                        enemiesRemaining--;
                     } else {
                         // Place players on the bottom half
+                        if (playersRemaining == 0) {
+                            continue;
+                        }
                         Player player = new Player(this, 10, 10, 4, this.keyListener);
                         player.setName(
                                 String.format("%s-%d", player.getName(), ++this.playerCount));
@@ -156,6 +165,7 @@ public class GameBoard {
                         this.positionCache.put(player, new Position(y, x));
                         this.turnManager.register(player);
                         Logger.info(String.format("Created %s", player.getName()));
+                        playersRemaining--;
                     }
                 }
             }
