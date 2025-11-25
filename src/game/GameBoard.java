@@ -183,12 +183,12 @@ public class GameBoard {
         Logger.info("Initializing actors.");
         Random rand = new Random();
         int playersRemaining = 4;
-        int enemiesRemaining = 15;
+        int enemiesRemaining = 9;
 
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
                 int pick = rand.nextInt(100);
-                if (this.canBeOccupied(y, x) && pick < 5) {
+                if (this.canBeOccupied(y, x) && pick < 8) {
                     // Place enemies on the top half of the board
                     if (y > this.height / 2) {
                         if (enemiesRemaining == 0) {
