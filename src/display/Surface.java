@@ -3,6 +3,7 @@ package display;
 import game.*;
 import game.terrain.TerrainContainer;
 import game.terrain.Terrain;
+import game.actor.Actor;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.awt.Color;
@@ -109,13 +110,13 @@ public class Surface extends JPanel {
         for (int row = 0; row < board.getBoardHeight(); row++) {
             for (int col = 0; col < board.getBoardWidth(); col++) {
                 TerrainContainer container = board.getTerrainContainer(row, col);
-                BoardPiece character = board.getCharacterPiece(row, col);
+                Actor actor = board.getActor(row, col);
 
                 for (Terrain piece : container.getBackgroundPieces()) {
                     drawPiece(g2d, piece, row, col, this.currUpdateTime);
                 }
 
-                drawPiece(g2d, character, row, col, this.currUpdateTime);
+                drawPiece(g2d, actor, row, col, this.currUpdateTime);
 
                 for (Terrain piece : container.getForegroundPieces()) {
                     drawPiece(g2d, piece, row, col, this.currUpdateTime);
