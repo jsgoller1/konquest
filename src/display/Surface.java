@@ -95,7 +95,7 @@ public class Surface extends JPanel {
 
         ArrayList<Player> players = this.board.getPlayers();
         int y = 35;
-        g2d.setColor(Color.BLUE);
+        g2d.setColor(Color.CYAN);
         g2d.drawString("Your Forces", 700, y);
         y += 25;
         g2d.drawString("----------------------------", 700, y);
