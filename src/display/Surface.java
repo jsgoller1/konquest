@@ -54,6 +54,9 @@ public class Surface extends JPanel {
          * DO NOT CALL THIS METHOD DIRECTLY. Swing triggers it when we call this.repaint(); You can
          * call methods downstream from it.
          */
+        if (this.board == null) {
+            return;
+        }
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         this.setBackground(Color.BLACK);
