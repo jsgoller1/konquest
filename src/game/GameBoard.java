@@ -83,7 +83,6 @@ public class GameBoard {
 
         Logger.info(String.format("Moving: %s", actor.getName()));
         Position position = this.positionCache.get(actor);
-        System.out.println(this.positionCache.size());
         assert position != null;
         assert this.actors[position.y][position.x] == actor;
 
