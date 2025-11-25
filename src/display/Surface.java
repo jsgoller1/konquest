@@ -4,15 +4,30 @@ import game.*;
 import game.terrain.TerrainContainer;
 import game.terrain.Terrain;
 import game.actor.Actor;
+import game.actor.Player;
+import game.actor.Enemy;
 import javax.swing.*;
+import java.util.ArrayList;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import logging.Logger;
 import sprites.Sprite;
 
 public class Surface extends JPanel {
+    String fonts[];
+    int font;
+
+
+    public Surface() {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        this.fonts = ge.getAvailableFontFamilyNames();
+        this.font = 0;
+    }
+
     private GameBoard board;
 
     // TODO: the board should own its size;
@@ -44,6 +59,7 @@ public class Surface extends JPanel {
         this.setBackground(Color.BLACK);
         this.drawGrid(g2d);
         this.drawPieces(g2d);
+        this.drawUI(g2d);
     }
 
     protected void drawGrid(Graphics2D g2d) {
@@ -68,6 +84,52 @@ public class Surface extends JPanel {
 
             g2d.drawLine(lineStartX, lineStartY, lineEndX, lineEndY);
         }
+
+    }
+
+    private void drawUI(Graphics2D g2d) {
+        g2d.setFont(new Font("Bodoni 72 Smallcaps", Font.BOLD, 24));
+
+        ArrayList<Player> players = this.board.getPlayers();
+        int y = 100;
+        g2d.setColor(Color.BLUE);
+        g2d.drawString("Your Forces", 700, y);
+        y += 25;
+        g2d.drawString("----------------------------", 700, y);
+        y += 25;
+        for (Player player : players) {
+            g2d.drawString(String.format("%s | HP: %d/%d | MP: %d | AP: %d", player.getName(),
+                    player.getHealth(), player.getMaxHealth(), player.getMovesRemaining(),
+                    player.getHasAttacked() ? 0 : 1), 700, y);
+            y += 30;
+        }
+
+        ArrayList<Enemy> enemies = this.board.getEnemies();
+        y += 50;
+        g2d.setColor(Color.RED);
+        g2d.drawString("Enemy Troops", 700, y);
+        y += 25;
+        g2d.drawString("----------------------------", 700, y);
+        y += 25;
+        for (Enemy enemy : enemies) {
+            g2d.drawString(String.format("%s: %d/%d HP", enemy.getName(), enemy.getHealth(),
+                    enemy.getMaxHealth()), 700, y);
+            y += 30;
+        }
+
+        y += 50;
+        g2d.setColor(Color.WHITE);
+        g2d.drawString("Controls:", 700, y);
+        y += 25;
+        g2d.drawString("----------------------------", 700, y);
+        y += 25;
+        g2d.drawString("Arrows: Move selected troop", 700, y);
+        y += 30;
+        g2d.drawString("Space: Attack", 700, y);
+        y += 30;
+        g2d.drawString("ESC: quit", 700, y);
+        y += 30;
+        g2d.drawString("Backspace: End turn", 700, y);
 
     }
 

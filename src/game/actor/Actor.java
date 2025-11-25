@@ -8,6 +8,7 @@ import sprites.SpriteComponent;
 abstract public class Actor extends BoardPiece {
     protected String name;
     protected GameBoard board;
+    protected int maxHealth;
     protected int health;
     protected int attack;
     protected int speed;
@@ -19,6 +20,7 @@ abstract public class Actor extends BoardPiece {
         super(spriteSheetPath);
         this.board = board;
         this.name = name;
+        this.maxHealth = health;
         this.health = health;
         this.attack = attack;
         this.speed = speed;
@@ -36,6 +38,10 @@ abstract public class Actor extends BoardPiece {
 
     public int getHealth() {
         return this.health;
+    }
+
+    public int getMaxHealth() {
+        return this.maxHealth;
     }
 
     public int getAttack() {
@@ -64,6 +70,10 @@ abstract public class Actor extends BoardPiece {
 
     public void setMovesRemaining(int newVal) {
         this.movesRemaining = newVal;
+    }
+
+    public boolean getHasAttacked() {
+        return this.hasAttacked;
     }
 
     public void setHasAttacked(boolean newVal) {

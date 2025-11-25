@@ -149,15 +149,14 @@ public class GameBoard {
         this.createEnemy(0, 3, 7);
         this.createEnemy(0, 3, 5);
         this.createEnemy(0, 4, 5);
-
     }
-
 
     private boolean createPlayer(int id, int y, int x) {
         if (!this.canBeOccupied(y, x)) {
             return false;
         }
         Player player = new Player(this, this.keyListener);
+        player.setName(String.format("Soldier %d", id));
         actors[y][x] = player;
         this.positionCache.put(player, new Position(y, x));
         this.turnManager.register(player);
@@ -171,6 +170,7 @@ public class GameBoard {
             return false;
         }
         Enemy enemy = new Enemy(this);
+        enemy.setName(String.format("Orc %d", id));
         actors[y][x] = enemy;
         this.positionCache.put(enemy, new Position(y, x));
         this.turnManager.register(enemy);
@@ -360,6 +360,33 @@ public class GameBoard {
             }
         }
         return new Position(y, x);
+    }
+
+    public ArrayList<Player> getPlayers() {
+        ArrayList<Player> players = new ArrayList<Player>();
+        for (int y = 0; y < this.height; y++) {
+            for (int x = 0; x < this.width; x++) {
+                Actor actor = this.getActor(y, x);
+                if (actor != null && actor instanceof Player) {
+                    players.add((Player) actor);
+                }
+            }
+        }
+        return players;
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+        for (int y = 0; y < this.height; y++) {
+            for (int x = 0; x < this.width; x++) {
+                Actor actor = this.getActor(y, x);
+                if (actor != null && actor instanceof Enemy) {
+                    enemies.add((Enemy) actor);
+                }
+            }
+        }
+        return enemies;
+
     }
 
     public int getBoardHeight() {
