@@ -21,6 +21,4 @@ public abstract class BoardPiece {
     public Sprite getNextSprite() {
         return this.spriteComponent.getNextSprite();
     }
-
-
 }

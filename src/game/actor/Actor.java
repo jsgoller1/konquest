@@ -59,6 +59,7 @@ abstract public class Actor extends BoardPiece {
         this.health -= damage;
         Logger.info(String.format("%s took %d damage! New HP is %d", this.getName(), damage,
                 this.health));
+        this.spriteComponent.setUseDamageMask(true);
         if (this.health <= 0) {
             this.board.removeActor(this);
         }

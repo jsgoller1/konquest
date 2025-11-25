@@ -21,6 +21,10 @@ public class Sprite {
         return this.spriteSheet;
     }
 
+    public void setSpriteSheet(BufferedImage spriteSheet) {
+        this.spriteSheet = spriteSheet;
+    }
+
     public int getHeight() {
         return this.SPRITE_HEIGHT;
     }
@@ -45,6 +49,17 @@ public class Sprite {
         return topLeftY + (this.SPRITE_HEIGHT + (this.SPRITE_HEIGHT * plusRows));
     }
 
+    public Sprite(Sprite sprite) {
+        this.spriteSheetPath = sprite.spriteSheetPath;
+        this.spriteSheet = sprite.spriteSheet;
+        this.plusRows = sprite.plusRows;
+        this.plusCols = sprite.plusCols;
+        this.topLeftX = sprite.topLeftX;
+        this.topLeftY = sprite.topLeftY;
+
+        Logger.debug("Copied sprite to: " + topLeftX + ", " + topLeftY);
+    }
+
     public Sprite(String spriteSheetPath, BufferedImage spriteSheet, int row, int plusRows, int col,
             int plusCols) {
         /*
@@ -60,7 +75,7 @@ public class Sprite {
         this.topLeftX = col * this.SPRITE_WIDTH;
         this.topLeftY = row * this.SPRITE_HEIGHT;
 
-        Logger.debug("Created new sprite sprite with: " + topLeftX + ", " + topLeftY);
+        Logger.debug("Created new sprite with: " + topLeftX + ", " + topLeftY);
 
     }
 }
