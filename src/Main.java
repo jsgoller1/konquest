@@ -35,6 +35,7 @@ class Main {
             musicPlayer.start();
         }
 
+
         while (GAME_RUNNING) {
             long time = System.currentTimeMillis();
             window.update(time);

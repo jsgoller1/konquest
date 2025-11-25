@@ -51,8 +51,10 @@ public class GameBoard {
         this.turnManager = new TurnManager();
         this.cursor = new Cursor();
 
-        initializeTerrain();
-        initializeActors();
+        initializeTerrain(false);
+        // initializeActors();
+        setupTestActors();
+
         Logger.info("Board created.");
     }
 
@@ -82,6 +84,25 @@ public class GameBoard {
         return this.positionCache.get(actor);
     }
 
+    public boolean moveActorTo(Actor actor, Position newPosition) {
+        Position current = this.positionCache.get(actor);
+        assert current != null;
+        assert this.actors[current.y][current.x] == actor;
+
+        if (!(this.canBeOccupied(newPosition.y, newPosition.x))) {
+            Logger.debug(String.format("Not moving actor from (%d, %d) to (%d, %d)", current.y,
+                    current.x, newPosition.y, newPosition.x));
+            return false;
+        }
+        this.actors[current.y][current.x] = null;
+        this.actors[newPosition.y][newPosition.x] = actor;
+        this.positionCache.put(actor, newPosition);
+        Logger.info(String.format("Moved %s to (%d, %d)", actor.getName(), newPosition.y,
+                newPosition.x));
+
+        return true;
+    }
+
     public boolean moveActor(Actor actor, int dy, int dx) {
         /*
          * This is a generic method for moving any actors - player, orcs, etc.
@@ -91,25 +112,15 @@ public class GameBoard {
             return false;
         }
 
-        Logger.info(String.format("Moving: %s", actor.getName()));
         Position position = this.positionCache.get(actor);
         assert position != null;
         assert this.actors[position.y][position.x] == actor;
 
-        int ny = position.y + dy;
-        int nx = position.x + dx;
-        if (!(this.canBeOccupied(ny, nx))) {
-            Logger.debug(String.format("Not moving actor from (%d, %d) to (%d, %d)", position.y,
-                    position.x, ny, nx));
-            return false;
-        }
-        this.actors[position.y][position.x] = null;
-        this.actors[ny][nx] = actor;
-        this.positionCache.put(actor, new Position(ny, nx));
-        return true;
+        Position newPosition = new Position(position.y + dy, position.x + dx);
+        return this.moveActorTo(actor, newPosition);
     }
 
-    private void initializeTerrain() {
+    private void initializeTerrain(boolean spawnMountains) {
         // Randomly add board pieces; this is just a proof of concept to ensure
         /// texture loading works correctly and will be scrapped
         Logger.info("Initializing terrain...");
@@ -123,13 +134,46 @@ public class GameBoard {
                 int pick = rand.nextInt(100);
                 if (pick > 90) {
                     container.addForegroundPiece(new TallGrass());
-                } else if (pick > 80) {
+                } else if (pick > 80 && spawnMountains) {
                     container.addBackgroundPiece(new Mountain());
                 }
             }
         }
         Logger.info("Initialized terrain.");
     }
+
+    private void setupTestActors() {
+        this.createPlayer(0, 2, 5);
+        this.createEnemy(0, 15, 5);
+    }
+
+
+    private boolean createPlayer(int id, int y, int x) {
+        if (!this.canBeOccupied(y, x)) {
+            return false;
+        }
+        Player player = new Player(this, 10, 10, 4, this.keyListener);
+        actors[y][x] = player;
+        this.positionCache.put(player, new Position(y, x));
+        this.turnManager.register(player);
+        ++this.playerCount;
+        Logger.info(String.format("Created %s", player.getName()));
+        return true;
+    }
+
+    private boolean createEnemy(int id, int y, int x) {
+        if (!this.canBeOccupied(y, x)) {
+            return false;
+        }
+        Enemy enemy = new Enemy(this);
+        actors[y][x] = enemy;
+        this.positionCache.put(enemy, new Position(y, x));
+        this.turnManager.register(enemy);
+        ++this.enemyCount;
+        Logger.info(String.format("Created %s", enemy.getName()));
+        return true;
+    }
+
 
     private void initializeActors() {
         Logger.info("Initializing actors.");
@@ -146,25 +190,14 @@ public class GameBoard {
                         if (enemiesRemaining == 0) {
                             continue;
                         }
-                        // TODO: For now, skip over enemy creation; just want to test player stuff.
-                        Enemy enemy = new Enemy(this, 10, 10, 4);
-                        enemy.setName(String.format("%s-%d", enemy.getName(), ++this.enemyCount));
-                        actors[y][x] = enemy;
-                        this.positionCache.put(enemy, new Position(y, x));
-                        this.turnManager.register(enemy);
+                        this.createEnemy(this.enemyCount, y, x);
                         enemiesRemaining--;
                     } else {
                         // Place players on the bottom half
                         if (playersRemaining == 0) {
                             continue;
                         }
-                        Player player = new Player(this, 10, 10, 4, this.keyListener);
-                        player.setName(
-                                String.format("%s-%d", player.getName(), ++this.playerCount));
-                        actors[y][x] = player;
-                        this.positionCache.put(player, new Position(y, x));
-                        this.turnManager.register(player);
-                        Logger.info(String.format("Created %s", player.getName()));
+                        this.createPlayer(this.playerCount, y, x);
                         playersRemaining--;
                     }
                 }
@@ -229,26 +262,42 @@ public class GameBoard {
         return this.removeActor(position.y, position.x);
     }
 
-    public Player getNearestPlayer(Enemy source) {
-        // Get closest player to an enemy based on Euclidean distance
+    public int getDistance(Actor actor1, Actor actor2) {
+        Position position1 = this.positionCache.get(actor1);
+        Position position2 = this.positionCache.get(actor2);
+        int xDistance = (position1.x - position2.x);
+        int yDistance = (position1.y - position2.y);
+        return (int) Math.sqrt(xDistance * xDistance + yDistance * yDistance);
+    }
+
+    public boolean atEdge(Actor actor) {
+        // Returns true if an actor is at the edge of the board; useful for fleeing behavior.
+        Position position = this.positionCache.get(actor);
+        return position.x == 0 || position.y == 0 || position.x == this.width
+                || position.y == this.height;
+    }
+
+    public Player getNearestPlayer(Enemy source, int distanceLimit) {
+        // Get closest player to an enemy based on Euclidean distance, within distance limit.
+        // If distanceLimit == -1, will be ignored.
+
         // TODO: this can and probably should be made generic, but
         // for now we only need it for finding players
         double best = Integer.MAX_VALUE;
         Player bestPlayer = null;
-        Position start = this.positionCache.get(source);
         for (Actor actor : this.positionCache.keySet()) {
             if (actor instanceof Player) {
-                Position target = this.positionCache.get(actor);
-                int xDistance = (start.x - target.x);
-                int yDistance = (start.y - target.y);
-                double distance = Math.sqrt(xDistance * xDistance + yDistance * yDistance);
+                int distance = this.getDistance(source, actor);
                 if (distance <= best) {
                     bestPlayer = (Player) actor;
                     best = distance;
                 }
             }
         }
-        return bestPlayer;
+        if (distanceLimit == -1 || best <= distanceLimit) {
+            return bestPlayer;
+        }
+        return null;
     }
 
     public int getBoardHeight() {

@@ -1,7 +1,9 @@
 package game.pathfinding;
 
 import java.util.*;
+import game.Position;
 import game.GameBoard;
+import game.Position;
 import game.terrain.TerrainContainer;
 import game.terrain.Terrain;
 
@@ -12,22 +14,32 @@ public class Move {
     private int endX;
     private int endY;
 
-    public Move(int startX, int startY, int endX, int endY, GameBoard board) {
+    public Move(GameBoard board, Position start, Position end) {
+        this(board, start.x, start.y, end.x, end.y);
+    }
+
+    public Move(GameBoard board, int startX, int startY, int endX, int endY) {
+        this.board = board;
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
-        this.board = board;
     }
 
-    public List<Pair> dijkstraSearch() {
+    public ArrayList<Position> pathfind() {
+        ArrayList<Position> path = this.dijkstraSearch();
+        path.remove(0);
+        return path;
+    }
+
+    private ArrayList<Position> dijkstraSearch() {
         PriorityQueue<NodeWithCost> queue =
                 new PriorityQueue<>(Comparator.comparingInt(n -> n.cost));
-        HashMap<Pair, Pair> parent = new HashMap<>();
-        HashMap<Pair, Integer> distances = new HashMap<>();
+        HashMap<Position, Position> parent = new HashMap<>();
+        HashMap<Position, Integer> distances = new HashMap<>();
 
-        Pair start = new Pair(this.startY, this.startX);
-        Pair end = new Pair(this.endY, this.endX);
+        Position start = new Position(this.startY, this.startX);
+        Position end = new Position(this.endY, this.endX);
 
         distances.put(start, 0);
         queue.offer(new NodeWithCost(start, 0));
@@ -38,7 +50,7 @@ public class Move {
 
         while (!queue.isEmpty()) {
             NodeWithCost current = queue.poll();
-            Pair currentPair = current.node;
+            Position currentPair = current.node;
 
             if (currentPair.equals(end)) {
                 return reconstructPath(parent, end);
@@ -52,7 +64,7 @@ public class Move {
             for (int i = 0; i < 4; i++) {
                 int newX = currentPair.getX() + dx[i];
                 int newY = currentPair.getY() + dy[i];
-                Pair neighbor = new Pair(newY, newX);
+                Position neighbor = new Position(newY, newX);
 
                 if (this.board.validCell(newX, newY)) {
                     TerrainContainer terrainContainer = this.board.getTerrainContainer(newX, newY);
@@ -75,18 +87,18 @@ public class Move {
     }
 
     private class NodeWithCost {
-        Pair node;
+        Position node;
         int cost;
 
-        NodeWithCost(Pair node, int cost) {
+        NodeWithCost(Position node, int cost) {
             this.node = node;
             this.cost = cost;
         }
     }
 
-    private List<Pair> reconstructPath(Map<Pair, Pair> parent, Pair end) {
-        List<Pair> path = new ArrayList<>();
-        Pair current = end;
+    private ArrayList<Position> reconstructPath(Map<Position, Position> parent, Position end) {
+        ArrayList<Position> path = new ArrayList<>();
+        Position current = end;
 
         while (current != null) {
             path.add(current);

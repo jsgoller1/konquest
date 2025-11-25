@@ -3,6 +3,7 @@ package game.actor;
 import java.util.List;
 import sprites.Sprite;
 import game.ai.Behavior;
+import game.ai.EnemyState;
 import game.GameBoard;
 import game.actor.Actor;
 
@@ -11,6 +12,9 @@ public class Enemy extends Actor {
     private Behavior fsm;
 
     static final String ENEMY_SPRITE_SHEET_PATH = "assets/Characters/Monsters/Orcs/SpearGoblin.png";
+    static final int HEALTH_POINTS = 10;
+    static final int ATTACK_POWER = 2;
+    static final int SPEED_RATING = 4;
 
     @Override
     public void initializeSprites() {
@@ -19,32 +23,33 @@ public class Enemy extends Actor {
         this.spriteComponent.loadSprite(0, 1);
     }
 
-    public Enemy(GameBoard board, int health, int attack, int speed) {
-        super(ENEMY_SPRITE_SHEET_PATH, board, "Enemy", health, attack, speed);
+    public Enemy(GameBoard board) {
+        super(ENEMY_SPRITE_SHEET_PATH, board, "Enemy", HEALTH_POINTS, ATTACK_POWER, SPEED_RATING);
         this.target = null;
-        this.fsm = new Behavior(this);
+        this.fsm = new Behavior(this.board, this);
 
         this.initializeSprites();
     }
 
     @Override
     public void onTurn() {
-        // TODO: Remove this; this is just code allowing for automatic turn cycling.
-        this.movesRemaining = 0;
-        this.hasAttacked = true;
-
         this.fsm.updateState();
         this.fsm.executeStateBehavior();
     }
 
-    public Player findAdjacentPlayer() {
-        // If any player is one square away, returns them. Otherwise null.
-        return null;
+    @Override
+    public boolean isTurnCompleted() {
+        switch (this.fsm.getCurrentState()) {
+            case EnemyState.DEAD:
+                return true;
+            case EnemyState.CHASING:
+            case EnemyState.SEARCHING:
+            case EnemyState.FLEEING:
+                return this.movesRemaining == 0;
+            case EnemyState.FIGHTING:
+                return this.hasAttacked;
+            default:
+                return true;
+        }
     }
-
-    public Player findNearestPlayer() {
-        // Get nearest player to this one
-        return null;
-    }
-
 }

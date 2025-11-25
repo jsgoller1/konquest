@@ -49,6 +49,10 @@ abstract public class Actor extends BoardPiece {
         return this.movesRemaining;
     }
 
+    public void setMovesRemaining(int newVal) {
+        this.movesRemaining = newVal;
+    }
+
     // What should the character do on their turn?
     abstract public void onTurn();
 
