@@ -2,6 +2,7 @@ package game;
 
 import logging.Logger;
 import java.io.Console;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import game.actor.Actor;
@@ -51,9 +52,9 @@ public class GameBoard {
         this.turnManager = new TurnManager();
         this.cursor = new Cursor();
 
-        initializeTerrain(false);
-        // initializeActors();
-        setupTestActors();
+        initializeTerrain(true);
+        initializeActors();
+        // setupTestActors();
 
         Logger.info("Board created.");
     }
@@ -145,7 +146,10 @@ public class GameBoard {
     private void setupTestActors() {
         this.createPlayer(0, 2, 5);
         this.createPlayer(0, 2, 19);
+        this.createEnemy(0, 3, 7);
         this.createEnemy(0, 3, 5);
+        this.createEnemy(0, 4, 5);
+
     }
 
 
@@ -270,12 +274,16 @@ public class GameBoard {
         return this.removeActor(position.y, position.x);
     }
 
-    public int getDistance(Actor actor1, Actor actor2) {
-        Position position1 = this.positionCache.get(actor1);
-        Position position2 = this.positionCache.get(actor2);
+    public int getDistance(Position position1, Position position2) {
         int xDistance = (position1.x - position2.x);
         int yDistance = (position1.y - position2.y);
         return (int) Math.sqrt(xDistance * xDistance + yDistance * yDistance);
+    }
+
+    public int getDistance(Actor actor1, Actor actor2) {
+        Position position1 = this.positionCache.get(actor1);
+        Position position2 = this.positionCache.get(actor2);
+        return getDistance(position1, position2);
     }
 
     public boolean atEdge(Actor actor) {
@@ -308,6 +316,38 @@ public class GameBoard {
         return null;
     }
 
+    public ArrayList<Position> getSurroundingSpaces(Actor actor) {
+        if (actor == null || this.positionCache.get(actor) == null) {
+            Logger.warn("Cannot get surrounding tiles for actor.");
+            return null;
+        }
+        Position pos = this.positionCache.get(actor);
+        ArrayList surrounding = new ArrayList();
+        for (int dy : new int[] {-1, 0, 1}) {
+            for (int dx : new int[] {-1, 0, 1}) {
+                if (this.validCell(pos.y + dy, pos.x + dx)) {
+                    surrounding.add(new Position(pos.y + dy, pos.x + dx));
+                }
+            }
+        }
+        return surrounding;
+    }
+
+    public Position getNearestCorner(Actor actor) {
+        Position position = this.positionCache.get(actor);
+        Position[] corners = new Position[] {new Position(0, 0), new Position(0, this.width - 1),
+                new Position(this.width - 1, 0), new Position(this.height - 1, this.width - 1)};
+        Position best = null;
+        int bestDistance = Integer.MAX_VALUE;
+        for (Position corner : corners) {
+            if (this.getDistance(position, corner) <= bestDistance) {
+                bestDistance = this.getDistance(position, corner);
+                best = corner;
+            }
+        }
+        return best;
+    }
+
     public Position getPlayerZoneTile() {
         boolean searching = true;
         Random rand = new Random();
@@ -332,5 +372,6 @@ public class GameBoard {
 
     public boolean isGameComplete() {
         return this.quitNow || this.playerCount == 0 || this.enemyCount == 0;
+
     }
 }

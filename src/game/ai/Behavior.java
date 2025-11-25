@@ -66,7 +66,8 @@ public class Behavior {
         }
 
         // Any live enemy who drops below fleeing threshold immediately flees
-        if (currentState != EnemyState.DEAD && owner.getHealth() <= this.FLEE_HEALTH_THRESHOLD) {
+        if (currentState != EnemyState.DEAD && currentState != EnemyState.FLEEING
+                && owner.getHealth() <= this.FLEE_HEALTH_THRESHOLD) {
             Logger.debug(String.format("%s: set state to FLEEING", owner.getName()));
             currentState = EnemyState.FLEEING;
             return true;
@@ -168,6 +169,7 @@ public class Behavior {
         // move towards target (nearest character)
         this.path = new Move(this.board, this.board.getActorPosition(this.owner),
                 this.board.getActorPosition(this.target)).pathfind();
+        Logger.info("Chase path:");
         for (Position pos : this.path) {
             Logger.info(String.format("(%d, %d)", pos.y, pos.x));
         }
@@ -178,91 +180,27 @@ public class Behavior {
         if (target != null) {
             int damage = this.owner.getAttack();
             Logger.info(
-                    String.format("%s damages %s!", this.owner.getName(), this.target.getName()));
+                    String.format("%s attacks %s!", this.owner.getName(), this.target.getName()));
             this.target.damage(damage);
             this.owner.setHasAttacked(true);
         }
     }
 
     private void executeFleeing() {
-        // move towards end of screen
-        // depending on position, move to closest edge
-        // 4 switch cases for cardinal directions?
+        if (path == null) {
+            this.path = new Move(this.board, this.board.getActorPosition(this.owner),
+                    this.board.getNearestCorner(this.owner)).pathfind();
+        }
+        Logger.info("Flee path:");
+        for (Position pos : this.path) {
+            Logger.info(String.format("(%d, %d)", pos.y, pos.x));
+        }
+        this.stepPath();
     }
 
-    // find owner on the provided map and remove it so it is no longer drawn // prob doesn't need to
-    // be so long, but I don't know how to make the fail case cleaner
     private void executeDead() {
         // remove by reference — GameBoard will search and clear the piece
-        // board.removeActor(owner);
-    }
-
-    // Find any adjacent player characters on map // May not be needed as Grant is doing
-    // pathfinding?
-    private Player findAdjacentPlayer() {
-        // int ownerY = -1;
-        // int ownerX = -1;
-        // for (int y = 0; y < board.getBoardHeight(); y++) {
-        // for (int x = 0; x < board.getBoardWidth(); x++) {
-        // if (board.getActor(y, x) == owner) {
-        // ownerY = y;
-        // ownerX = x;
-        // break;
-        // }
-        // }
-        // if (ownerY != -1)
-        // break;
-        // }
-        // if (ownerY == -1)
-        // return null; // owner not placed on map
-
-        // // Check 4 neighbors: up, down, left, right
-        // int[][] neigh = {{ownerY - 1, ownerX}, {ownerY + 1, ownerX}, {ownerY, ownerX - 1},
-        // {ownerY, ownerX + 1}};
-        // for (int[] n : neigh) {
-        // int ny = n[0], nx = n[1];
-        // if (!board.validCell(ny, nx))
-        // continue;
-        // Actor p = board.getActor(ny, nx);
-        // if (p instanceof Player) {
-        // return (Player) p;
-        // }
-        // }
-        return null;
-    }
-
-    // Find any player character within given range on map // // May not be needed as Grant is doing
-    // pathfinding?
-    private Player findPlayerInRange(int range) {
-        // int ownerY = -1;
-        // int ownerX = -1;
-        // for (int y = 0; y < board.getBoardHeight(); y++) {
-        // for (int x = 0; x < board.getBoardWidth(); x++) {
-        // if (board.getActor(y, x) == owner) {
-        // ownerY = y;
-        // ownerX = x;
-        // break;
-        // }
-        // }
-        // if (ownerY != -1)
-        // break;
-        // }
-
-        // if (ownerY == -1)
-        // return null;
-
-        // for (int y = 0; y < board.getBoardHeight(); y++) {
-        // for (int x = 0; x < board.getBoardWidth(); x++) {
-        // Actor p = board.getActor(y, x);
-        // if (p instanceof Player) {
-        // int dist = Math.abs(ownerY - y) + Math.abs(ownerX - x);
-        // if (dist <= range)
-        // return (Player) p;
-        // }
-        // }
-        // }
-
-        return null;
+        this.board.removeActor(this.owner);
     }
 
     // getter methods

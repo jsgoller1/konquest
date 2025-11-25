@@ -1,7 +1,9 @@
 package game.actor;
 
 import logging.Logger;
+import java.util.ArrayList;
 import game.GameBoard;
+import game.Position;
 import game.actor.Actor;
 import sprites.Sprite;
 import input.GameKeyListener;
@@ -12,8 +14,8 @@ public class Player extends Actor {
 
     static final String PLAYER_SPRITE_SHEET_PATH =
             "assets/Characters/Soldiers/Melee/RedMelee/SwordsmanRed.png";
-    static final int HEALTH_POINTS = 2;
-    static final int ATTACK_POWER = 2;
+    static final int HEALTH_POINTS = 10;
+    static final int ATTACK_POWER = 8;
     static final int SPEED_RATING = 4;
 
     @Override
@@ -40,17 +42,28 @@ public class Player extends Actor {
         } else if (keyListener.rightArrowPressed()) {
             this.move(0, 1);
         } else if (keyListener.spacePressed()) {
-            Logger.debug("Player attacking...");
             if (!this.hasAttacked) {
-                Logger.debug("Player attacks!");
-                // TODO: attack
-                this.hasAttacked = true;
+                Logger.debug("Player attacking...");
+                this.attack();
             }
         } else if (keyListener.backspacePressed()) {
             Logger.debug("Ending player's turn.");
             this.movesRemaining = 0;
             this.hasAttacked = true;
         }
+    }
+
+    public void attack() {
+        ArrayList<Position> surrounding = this.board.getSurroundingSpaces(this);
+        for (Position adjacent : surrounding) {
+            Actor neighbor = this.board.getActor(adjacent.y, adjacent.x);
+            Logger.info(String.format("Attack %d, %d?", adjacent.y, adjacent.x));
+            if (neighbor != null && neighbor instanceof Enemy && neighbor != this) {
+                String.format("%s attacks %s!", this.getName(), neighbor.getName());
+                neighbor.damage(this.attack);
+            }
+        }
+        this.hasAttacked = true;
     }
 
     @Override
